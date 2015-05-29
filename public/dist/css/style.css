@@ -54,22 +54,30 @@ a#log-in :hover {
   background: url("https://download.unsplash.com/photo-1421757295538-9c80958e75b0") no-repeat center center;
   background-size: cover;
   height: 60vh;
-  margin-bottom: 3rem; }
+  margin-bottom: 3rem;
+  margin-top: -4em; }
 
 h1.cta {
   font-size: 4em;
   line-height: .9em;
-  margin-top: 20vh;
+  margin-top: 25vh;
   font-weight: bolder;
   text-shadow: 1px 1px 10px rgba(255, 255, 255, 0.1);
 /*  color: white;
-*/  text-align: left;
+*/  text-align:;
+}
+h1.headline {
+  font-weight: bold;
+  line-height: 1.1em;
 }
 h2 {
   font-weight: bolder;}
+h5.subheader {
+  margin-top: .5em;
+}
 
 li[data-clock-on='true'] {
-  background-color: #444; }
+  background-color: #F16676; }
 
 section #content {
   margin-top: 4em;
@@ -97,5 +105,16 @@ button.stop {
 #footer p {
   padding-top: 1.5em;
 }
+
+button, .button { 
+  background-color: #C9C9C9;
+  border-color: #C9C9C9;
+}
+
+button:hover, .button:hover, button:active, .button:active, button:focus, .button:focus{ 
+  background-color: #00B9AD;
+  border-color: #00B9AD;
+}
+
 
 

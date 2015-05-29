@@ -186,6 +186,18 @@ app.post("/:id/jobs", function (req, res) {
 		});
 });
 
+// Delete Job
+app.delete("/:id/delete", function (req, res) {
+	var jobId = req.params.id;
+	var clientId = req.body.id;
+
+	db.Client.deleteJob(jobId, clientId,
+		function (err, job) {
+			res.send(201);
+	});
+});
+
+// Add Job
 app.put("/:id/start", function (req, res) {
 	var jobId = req.params.id;
 	var clientId = req.body.id;

@@ -26,7 +26,7 @@ var clientSchema = new mongoose.Schema({
 												}],
 												totalTime: {
 													type: String,
-													default: "00:00"
+													default: "00:00:00"
 												},
 											}
 										]
@@ -79,6 +79,18 @@ clientSchema.statics.stopTime = function (jobId, clientId, cb) {
 	});
 };
 
+clientSchema.statics.deleteClient = function (clientId, cb) {
+	this.findOneAndRemove({
+		_id: clientId
+	}, cb);
+};
+
+clientSchema.statics.deleteJob = function (jobId, clientId, cb) {
+	this.update(
+		{ _id: clientId}, 
+		{ $pull: { "jobs": { "_id": jobId } }  },
+		cb);
+};
 
 var getTotalTime = function (jobId, clientId, user, callback) {
 	console.log("entered getTotalTime");
@@ -98,13 +110,12 @@ var getTotalTime = function (jobId, clientId, user, callback) {
 				sum += jobTotals[i];
 			}
 		}
-		console.log("getTotalTime -> convert time");
+		console.log(sum);
+		console.log("getTotalTime -> convert time" + sum);
 		// convert sum to human time
-		var hours = formatTime(Math.floor(sum/1000/60/60));
-		var minutes = formatTime(Math.floor(sum/1000/60));
-		console.log(hours);
-		var humanTime = hours + ":" + minutes;
-		console.log("getTotalTime -> update totalTime");
+
+		var humanTime = sum.toHHMMSS();
+
 		// update totalTime
 		user.update({
 			_id: clientId,
@@ -126,8 +137,22 @@ clientSchema.statics.startTime = function (jobId, clientId, cb) {
 		cb);	
 };
 
-var formatTime = function (num) {
-	return ("0" + num).slice(-2);
+// var formatTime = function (num) {
+// 	return ("0" + num).slice(-2);
+// };
+
+Number.prototype.toHHMMSS = function () {
+    var secNum = Math.floor(parseInt(this, 10) / 1000); // don't forget the second param
+    console.log(secNum);
+    var hours   = Math.floor(secNum / 3600);
+    var minutes = Math.floor((secNum - (hours * 3600)) / 60);
+    var seconds = secNum - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    var time    = hours+':'+minutes+':'+seconds;
+    return time;
 };
 
 

@@ -7,6 +7,7 @@ $(function() {
 	stopTime();
 	toggleButtons();
 	logOut();
+	deleteJob();
 });
 
 var render = function (parentId, templateId, items) {
@@ -107,7 +108,6 @@ var startTime = function () {
 						renderJobs($clientId);
 			} 
 		});
-
 	});
 };
 
@@ -127,6 +127,25 @@ var stopTime = function () {
 				renderJobs($clientId);
 			} 
 		});	
+	});
+};
+
+var deleteJob = function () {
+
+	$("section").on("click", ".delete", function (e) {
+		e.preventDefault();
+		var $jobId = $(this).closest("li")[0].id;
+		console.log($jobId);
+		var $clientId = $("form#add-job").attr("data-client-id");
+
+		$.ajax({
+			url: "/" + $jobId + "/delete",
+			method: "DELETE",
+			data: {id: 	$clientId},
+			success: function (data) {
+						renderJobs($clientId);
+			} 
+		});
 	});
 };
 
