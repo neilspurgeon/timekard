@@ -82,13 +82,11 @@
 <!-- job template -->
 <script type="text/template" id="job-template">
   <div class="row">
-	  <li class="large-12 columns" id="<%= _id %>" data-clock-on="<%= clockOn %>">
-			<div id="item">
-			<h2><%= name %></h2>
-			
+	  <li class="columns" id="<%= _id %>" data-clock-on="<%= clockOn %>">
+			<h3><%= name %></h3>
+			<h3>Total: <%= totalTime %></h3>
 			<button class="start right">start</button>
 			<button class="stop right">stop</button>
-			</div>
 		</li>
 	</div>
 </script>
