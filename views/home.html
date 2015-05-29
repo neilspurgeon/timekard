@@ -1,12 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js" lang="en" >
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>TimeKard : Home</title>
+
+	<script type="text/javascript" src="/jquery/dist/jquery.js"></script>
+	<script type="text/javascript" src="/underscore/underscore.js"></script>
+	<script type="text/javascript" src="/dist/js/app.js"></script>
+	<script type="text/html" src="/jobs.html"></script>
+	<link rel="stylesheet" href="/dist/css/normalize.css">
+	<link rel="stylesheet" href="/dist/css/foundation.css">
+	<link rel="stylesheet" href="/dist/css/style.css">
 </head>
 <body>
-	<div>
-		<a href="/signup/">Sign Up</a>
-		<a href="/login/">Log In</a>
+<div class="fixed contain-to-grid">
+	<nav class="top-bar" data-topbar role="navigation">
+	  <ul class="title-area">
+	    <li class="name">
+	      <h1><a href="/app/"><h1><div id="logo" class="columns"></div></h1>
+	    </li>
+	    <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+	  </ul>
+
+	  <section class="top-bar-section">
+	    <!-- Right Nav Section -->
+	    <ul class="right" id="right-buttons">
+	    	<li><a href="#" id="log-in" data-reveal-id="firstModal">Log In</a></li>
+	      <li><a href="/signup/" id="sign-up" data-reveal-id="secondModal">Sign Up</a></li>
+	    </ul>
+	  </section>
+	</nav>
+</div>
+
+<section class="hero">
+  <div class="row text-center">
+    <div class="small-12 columns">
+    	<h1 class="cta">Create clients,<br> assign jobs,<br> record time.</h1>
+    </div>
+    <div class="large-6 large-pull-2 columns">
+
+    </div>
+  </div>
+</section>
+
+<div class="row">
+  <div class="small-12 columns">	
+    <h2>Track your time spent</h2><br>
+    <h4 class="subheader">With timekard you can track your time from any web-enabled device. <br><br>Start timing on your phone and stop on your laptop. <br>Timekard will record the total and save it to your account.</h4>
+  </div>
+</div>
+<footer class="row">
+<div class="large-12 columns" id="footer">
+		<div id="large-12 columns">
+			<p>timekard 2015</p>
+		</div>
 	</div>
-</body>
+</footer>
+
+<!-- LOG IN Reveal Modals begin -->
+<div id="firstModal" class="reveal-modal" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+  <h2 class="columns" id="firstModalTitle">Log in</h2>
+
+  <form class="" method="POST" action="/login" >
+  	<div class="row">
+  		<div class="large-6 columns">
+  			<input type="text" name="user[email]" placeholder="email">
+  		</div>
+  		<div class="large-6 columns">
+  			<input type="password" name="user[password]" placeholder="password">
+  		</div>
+  	<div class="columns">
+  		<button>Log In</button>
+  	</div>
+  	
+  </form>
+
+  <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+</div>
+<!-- LOG IN Reveal Modals end -->
+
+<!-- SIGN UP Reveal Modals begin -->
+<div id="secondModal" class="reveal-modal" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+  <h2 class="columns" id="secondModalTitle">Sign up</h2>
+
+  <form method="POST" action="/users" >
+  	<div class="row">
+  		<div class="large-4 columns">
+  			<input type="text" name="user[name][first]" placeholder="first name">
+  		</div>
+  		<div class="large-4 columns">
+  			<input type="text" name="user[name][last]" placeholder="last name">
+  		</div>
+  		<div class="large-4 columns">
+  			<input type="text" name="user[email]" placeholder="email">
+  		</div>
+  	</div>
+  	<div class="row">
+  		<div class="large-4 columns">
+  			<input type="password" name="user[password]" placeholder="password">
+  		</div>
+  		<div class="large-4 columns">
+  			<input type="password" name="user[password-confirm]" placeholder="confirm password">
+  		</div>
+  		<div class="columns">
+  			<button>Create Account</button>
+  		</div>
+  	</div>
+  	
+  	
+  	
+  	
+  	
+  </form>
+
+  <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+</div>
+<!-- SIGN UP Reveal Modals end -->
+
+</div>
+  <script src="/dist/js/foundation.min.js"></script>
+  <script>
+    $(document).foundation();
+  </script>
+</body>	
+
 </html>

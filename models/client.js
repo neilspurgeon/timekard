@@ -136,4 +136,3 @@ var formatTime = function (num) {
 var Client = mongoose.model("Client", clientSchema);
 
 module.exports = Client;
-
