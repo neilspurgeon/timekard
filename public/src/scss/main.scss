@@ -1,0 +1,35 @@
+body {
+	margin-top: 4em;
+}
+
+
+li[data-clock-on='true'] {
+	background-color: #444;
+}
+
+#content {
+	li {
+		margin: 0;
+		border-bottom: 1px solid #999;
+	}
+}
+ul {
+	list-style: none;
+	list-style-image: none;
+	list-style-type: none;
+	padding: 0;
+} 
+
+
+
+button.stop {
+	display: none;
+}
+
+/*	#start {
+		display: none;
+	}*/
+
+	#nav {
+		background-color: #333;	
+	}

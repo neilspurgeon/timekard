@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TimeKard : Sign Up</title>
+</head>
+<body>
+	<form method="POST" action="/users" >
+		<input type="text" name="user[name][first]" placeholder="first name">
+		<input type="text" name="user[name][last]" placeholder="last name">
+		<input type="text" name="user[email]" placeholder="email">
+		<input type="text" name="user[password]" placeholder="password">
+		<input type="text" name="user[password-confirm]" placeholder="confirm password">
+		<button>Create Account</button>
+	</form>
+
+	<form method="POST" action="/logout">
+		<button>Log out</button>
+	</form>
+</body>
+</html>
