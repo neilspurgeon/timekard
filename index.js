@@ -125,6 +125,13 @@ app.get("/profile", function (req, res) {
 app.get("/app", function (req, res) {
 	var appPath = path.join(views, "app.html");
 	res.sendFile(appPath);
+
+	var currentSession = req.session.userId;
+
+	if (currentSession === null) {
+		console.log("no session");
+		res.redirect("/");
+	}
 });
 
 // CLIENT ROUTES
