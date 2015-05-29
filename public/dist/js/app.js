@@ -57,6 +57,7 @@ var createClient = function () {
 		
 		$.post("/clients", clientParams, function(req) {
 			renderOne("client-ul", "client-template", req);
+			$("#add-client")[0].reset();
 		});
 	});
 };
@@ -78,6 +79,7 @@ var addJob = function () {
 			//renderOne("job-ul", "job-template", req);
 		}).done(function() {
 			renderJobs($clientId);
+			$("#add-job")[0].reset();
 		});
 	});
 };
