@@ -55,7 +55,8 @@ userSchema.statics.authenticate = function(email, password, cb) {
 	},
 	function(err, user){
 		if (user === null){
-			console.log("Username not found");
+			console.log("ERR: Username not found");
+			throw new Error("Username not found");
 		} else if (user.checkPassword(password)){
 			cb(null, user);
 		}
