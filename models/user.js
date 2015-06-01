@@ -3,44 +3,38 @@ var mongoose = require("mongoose"),
 								salt = bcrypt.genSaltSync(10);
 
 var userSchema = new mongoose.Schema({
-								 // first, last, email, password
-								 // clients > jobs > sessions, start, stop, date
 								 email: {
-												 	type: String,
-												 	required: true,
-												 	lowercase: true,
-												 	index: {
-												 						unique: true
-												 				 }
-											 	}, 
+									 	type: String,
+									 	required: true,
+									 	lowercase: true,
+									 	index: {
+									 		unique: true
+									 	}
+								 	}, 
 								 passwordDigest: {
-																 		type: String,
-																 		required: true
-								 								 },
+								 	type: String, 
+								 	required: true
+								 },
 								 name: {
-											 		first: {
-											 							type: String,
-											 							required: true
-											 		},
-									 	  		last: {
-												 	  			type: String,
-												 	  			required: true
-									 	  		}
-											 }
-								});
+								 	first: {
+								 		type: String,
+								 		required: true
+								 	},
+								 	last: {
+								 		type: String,
+								 		required: true
+								 	}
+								 }
+});
 
 userSchema.statics.createSecure = function (email, password, first, last, cb) {
 	var that = this;
 	// hash the password
 	bcrypt.genSalt(function (err, salt) {
 		bcrypt.hash(password, salt, function (err, hash) {
-			that.create({
-				email: email,
-				passwordDigest: hash,
-				name: {
-					first: first,
-					last: last
-				}
+			that.create(
+			{ email: email, passwordDigest: hash,
+				name: { first: first, last: last }
 			}, cb);
 		});
 	});
@@ -67,16 +61,6 @@ userSchema.statics.authenticate = function(email, password, cb) {
 		}
 	});
 };
-
-// userSchema.statics.createClient = function (userId) {
-// 	var id = user._id;
-
-// 	db.Client.create
-
-// 	})
-// }
-
-
 
 var User = mongoose.model("User", userSchema);
 

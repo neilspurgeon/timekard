@@ -1,4 +1,6 @@
 // REQUIRMENTS
+// ==========================================================
+// ==========================================================
 var express = require("express"),
 		app = express(),
 		db = require("./models"),
@@ -18,9 +20,9 @@ app.use(session({
 	resave: false
 }));
 
-
-
 // MIDDLEWARE
+// ==========================================================
+// ==========================================================
 app.use("/", function (req, res, next) {
 	req.login = function (user) {
 		req.session.userId = user._id;
@@ -34,7 +36,6 @@ app.use("/", function (req, res, next) {
 			req.user = user;
 			cb(null, user);
 		});
-		// console.log("user = " + user);
 	};
 
 	req.logout = function () {
@@ -56,7 +57,6 @@ app.use("/app", function (req, res, next) {
 	next();
 });
 
-
 // ROUTES
 // ==========================================================
 // ==========================================================
@@ -71,11 +71,23 @@ app.get("/", function (req, res) {
 	}
 });
 
+
+app.get("/app", function (req, res) {
+	var appPath = path.join(views, "app.html");
+	res.sendFile(appPath);
+
+});
+
+// USER ROUTES
+//============
+
+// Get User html layout 
 app.get("/signup", function (req, res) {
 	var signupPath = path.join(views, "signup.html");
 	res.sendFile(signupPath);
 });
 
+// Create User
 app.post("/users", function (req, res) {
 	var user = req.body.user;
 	console.log(user.name);
@@ -95,41 +107,57 @@ app.post("/users", function (req, res) {
 //     });
 // });
 
+// Get Login html layout
 app.get("/login", function (req, res) {
 	var loginPath = path.join(views, "login.html");
 	res.sendFile(loginPath);
 });
 
+// Log In User 
 app.post("/login", function (req, res) {
-	var user = req.body.user;
+	var email = req.body.email;
+	var password = req.body.password;
+	console.log(email);
+	console.log(password);
 
 	db.User
-		.authenticate(user.email, user.password,
+		.authenticate(email, password,
 		function (err, user) {
 			req.login(user);
-			res.redirect("/app");
+			console	.log(user);
+			res.send(user);
 		});
 });
 
+// Log Out User
 app.post("/logout", function (req, res) {
 	  req.logout();
 	  res.send(201);
 });
 
+// Get User Profile
 app.get("/profile", function (req, res) {
 	req.currentUser(function (err, user){
 		res.send(user);
 	});
 });
 
-app.get("/app", function (req, res) {
-	var appPath = path.join(views, "app.html");
-	res.sendFile(appPath);
-	
-});
-
 // CLIENT ROUTES
 //==============
+
+// Get Clients
+app.get("/:id/clients", function (req, res) {
+	var user = req.session.userId;
+
+	db.Client.find({
+		userId: user
+	},
+		function (err, clients) {
+			res.send(clients);
+		});
+});
+
+// Create Clients
 app.post("/clients", function (req, res) {
 	var clientName = req.body.name;
 	var user = req.session.userId;
@@ -143,25 +171,16 @@ app.post("/clients", function (req, res) {
 	});
 });
 
-app.get("/:id/clients", function (req, res) {
-	var user = req.session.userId;
-
-	db.Client.find({
-		userId: user
-	},
-		function (err, clients) {
-			res.send(clients);
-		});
-});
-
 // JOB ROUTES
 // ==========
 
+// Get Jobs html layout
 app.get("/jobs", function (req, res) {
 	var jobsPath = path.join(views, "jobs.html");
 	res.sendFile(jobsPath);
 });
 
+// Get Jobs
 app.get("/:id/jobs", function (req, res) {
 		db.Client.find({
 		_id: req.params.id 
@@ -171,18 +190,15 @@ app.get("/:id/jobs", function (req, res) {
 		});
 });
 
+// Create Job
 app.post("/:id/jobs", function (req, res) {
 	var clientId = req.params.id;
 	var jobName = req.body.name;
 	
 	db.Client.update(
 		{ _id: clientId},
-		{ $push: {jobs: {name: jobName }}},
+		{ $push: { jobs: { name: jobName } } },
 		function (err, success) {
-			// console.log(success);
-			// console.log(err);	
-			console.log(req.body);
-			// console.log(res);
 			res.send(201);
 		});
 });
@@ -198,7 +214,7 @@ app.delete("/:id/delete", function (req, res) {
 	});
 });
 
-// Add Job
+// Start Timing Job
 app.put("/:id/start", function (req, res) {
 	var jobId = req.params.id;
 	var clientId = req.body.id;
@@ -209,17 +225,20 @@ app.put("/:id/start", function (req, res) {
 		});
 });
 
+// Stop Timing Job
 app.put("/:id/stop", function (req, res) {
 	var jobId = req.params.id;
 	var clientId = req.body.id;
 
 	db.Client.stopTime(jobId, clientId,
 		function (err, job) {
-			console.log("complete?");
 			res.send(201);
 	});
 });
 
+// LISTEN
+// ==========================================================
+// ==========================================================
 
 // LISTEN ON PORT
 app.listen(process.env.PORT || 3000, function() {

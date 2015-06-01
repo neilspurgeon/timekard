@@ -8,7 +8,28 @@ $(function() {
 	toggleButtons();
 	logOut();
 	deleteJob();
+	login();
 });
+
+// var User = function (firstname, lastname, id) {
+// 	this.firstName = firstname;
+// 	this.lastName = lastname;
+// 	this.id = id;
+
+// 	console.log(this);
+// };
+
+var login = function () {
+	$("#login").on("submit", function (e) {
+		e.preventDefault();	
+		var loginParams = $(this).serialize();
+		$.post("/login", loginParams, function (data) {
+			window.location = "/app";
+			// console.log(data.name.first, data.name.last, data._id)
+			// var user = new User(data.name.first, data.name.last, data._id);
+		});
+	});
+};
 
 var render = function (parentId, templateId, items) {
 	var template = _.template( $("#" + templateId).html() );
@@ -173,6 +194,8 @@ var logOut = function () {
 		});
 	});
 };
+
+
 
 
 // ===========================================

@@ -66,13 +66,13 @@
 <div id="firstModal" class="reveal-modal" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
   <h2 class="columns" id="firstModalTitle">Log in</h2>
 
-  <form class="" method="POST" action="/login" >
+  <form class="" id="login">
   	<div class="row">
   		<div class="large-6 columns">
-  			<input type="text" name="user[email]" placeholder="email">
+  			<input type="text" name="email" placeholder="email">
   		</div>
   		<div class="large-6 columns">
-  			<input type="password" name="user[password]" placeholder="password">
+  			<input type="password" name="password" placeholder="password">
   		</div>
   	<div class="columns">
   		<button>Log In</button>
@@ -111,11 +111,7 @@
   			<button>Create Account</button>
   		</div>
   	</div>
-  	
-  	
-  	
-  	
-  	
+ 
   </form>
 
   <a class="close-reveal-modal" aria-label="Close">&#215;</a>
