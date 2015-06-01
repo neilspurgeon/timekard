@@ -9,6 +9,7 @@ $(function() {
 	logOut();
 	deleteJob();
 	login();
+	formButtonFix();
 });
 
 // var User = function (firstname, lastname, id) {
@@ -71,15 +72,18 @@ var renderJobs = function (clientId) {
 var createClient = function () {
 
 	$("#add-client").on("submit", function (e) {
-
 		e.preventDefault();
 		var clientParams = $(this).serialize();
-		console.log(clientParams);
-		
 		$.post("/clients", clientParams, function(req) {
 			renderOne("client-ul", "client-template", req);
 			$("#add-client")[0].reset();
 		});
+	});
+};
+
+var formButtonFix = function () {
+	$("section").on("click", ".postfix", function () {
+		$(this).closest("form").submit();
 	});
 };
 
