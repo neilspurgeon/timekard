@@ -24,3 +24,5 @@ TimeKard is time tracking web app, that clocks the amount of time spent on proje
 `/models/` contains database schema and models
 `/public/dist/` contains `css` `js` `img`
 `/views` contains html layouts and partials
+
+//
