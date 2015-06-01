@@ -91,14 +91,20 @@ app.get("/signup", function (req, res) {
 app.post("/users", function (req, res) {
 	var user = req.body.user;
 	console.log(user.name);
-	db.User
+	
+		db.User
 		.createSecure(user.email, user.password, user.name.first, user.name.last,
 		function (err, user) {
 			//console.log(user);
-			req.login(user);
-			res.redirect("/app");
+			if (user) {
+				req.login(user);
+				res.redirect("/app");
+			} else {
+				console.log("error: email already exists");
+			}
 		});
 });
+
 
 // app.get("/users", function (req, res) {
 //   db.User.find({},
