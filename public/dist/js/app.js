@@ -1,5 +1,5 @@
 $(function() {
-	renderAll("client-ul", "client-template", "/:id/clients");
+	renderAll("client-ul", "client-template", "/clients");
 	createClient();
 	enterClient();
 	addJob();
@@ -60,7 +60,7 @@ var renderAll = function (parentId, templateId, path) {
 var renderJobs = function (clientId) {
 	$("#content").load("/jobs.html", function(){
 
-		$.get("/" + clientId + "/jobs", function (data) {
+		$.get("/clients/" + clientId + "/jobs", function (data) {
 			//var data = req[0].jobs;
 			console.log(data[0].jobs);
 			render("job-ul", "job-template", data[0].jobs);
@@ -97,7 +97,7 @@ var addJob = function () {
 		console.log($jobParams);
 		console.log($clientId);
 		
-		$.post("/" + $clientId + "/jobs", $jobParams, function(req) {
+		$.post("/clients/" + $clientId + "/jobs", $jobParams, function(req) {
 			//console.log("jobs = " + req);
 			console.log(req);
 
@@ -128,7 +128,7 @@ var startTime = function () {
 		var $clientId = $("form#add-job").attr("data-client-id");
 
 		$.ajax({
-			url: "/" + $jobId + "/start",
+			url: "/jobs/" + $jobId + "/start",
 			method: "PUT",
 			data: {id: 	$clientId},
 			success: function (data) {
@@ -147,7 +147,7 @@ var stopTime = function () {
 		var $clientId = $("form#add-job").attr("data-client-id");
 
 		$.ajax({
-			url: "/" + $jobId + "/stop",
+			url: "/jobs/" + $jobId + "/stop",
 			method: "PUT",
 			data: {id: 	$clientId},
 			success: function (req, res) {
@@ -166,7 +166,7 @@ var deleteJob = function () {
 		var $clientId = $("form#add-job").attr("data-client-id");
 
 		$.ajax({
-			url: "/" + $jobId + "/delete",
+			url: "/jobs/" + $jobId + "/delete",
 			method: "DELETE",
 			data: {id: 	$clientId},
 			success: function (data) {

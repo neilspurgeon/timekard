@@ -152,7 +152,7 @@ app.get("/profile", function (req, res) {
 //==============
 
 // Get Clients
-app.get("/:id/clients", function (req, res) {
+app.get("/clients", function (req, res) {
 	var user = req.session.userId;
 
 	db.Client.find({
@@ -187,7 +187,7 @@ app.get("/jobs", function (req, res) {
 });
 
 // Get Jobs
-app.get("/:id/jobs", function (req, res) {
+app.get("/clients/:id/jobs", function (req, res) {
 		db.Client.find({
 		_id: req.params.id 
 	},
@@ -197,7 +197,7 @@ app.get("/:id/jobs", function (req, res) {
 });
 
 // Create Job
-app.post("/:id/jobs", function (req, res) {
+app.post("/clients/:id/jobs", function (req, res) {
 	var clientId = req.params.id;
 	var jobName = req.body.name;
 	
@@ -210,7 +210,7 @@ app.post("/:id/jobs", function (req, res) {
 });
 
 // Delete Job
-app.delete("/:id/delete", function (req, res) {
+app.delete("/jobs/:id/delete", function (req, res) {
 	var jobId = req.params.id;
 	var clientId = req.body.id;
 
@@ -221,7 +221,7 @@ app.delete("/:id/delete", function (req, res) {
 });
 
 // Start Timing Job
-app.put("/:id/start", function (req, res) {
+app.put("/jobs/:id/start", function (req, res) {
 	var jobId = req.params.id;
 	var clientId = req.body.id;
 	
@@ -232,7 +232,7 @@ app.put("/:id/start", function (req, res) {
 });
 
 // Stop Timing Job
-app.put("/:id/stop", function (req, res) {
+app.put("/jobs/:id/stop", function (req, res) {
 	var jobId = req.params.id;
 	var clientId = req.body.id;
 
