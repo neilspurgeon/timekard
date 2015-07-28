@@ -49,15 +49,6 @@ app.use("/", function (req, res, next) {
 
 });
 
-app.use("/app", function (req, res, next) {
-	var currentSession = req.session.userId;
-
-	if (currentSession === null) {
-		console.log("no session");
-		res.redirect("/");
-	}
-	next();
-});
 
 // ROUTES
 // ==========================================================
@@ -72,13 +63,6 @@ app.get("/", function (req, res) {
 		var rootPath = path.join(public, "build/index.html");
 		res.sendFile(rootPath);
 	}
-});
-
-
-app.get("/app", function (req, res) {
-	var appPath = path.join(views, "app.html");
-	res.sendFile(appPath);
-
 });
 
 // USER ROUTES
@@ -107,14 +91,6 @@ app.post("/users", function (req, res) {
 			}
 		});
 });
-
-
-// app.get("/users", function (req, res) {
-//   db.User.find({},
-//     function (err, users) {
-//       res.send(users);
-//     });
-// });
 
 // Get Login html layout
 app.get("/login", function (req, res) {
