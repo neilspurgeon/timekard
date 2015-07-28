@@ -4,6 +4,13 @@
   "authors": [
     "Neil Spurgeon <neilspurgeon@gmail.com>"
   ],
+  "main": "gulpfile.js",
+  "keywords": [
+    "framework",
+    "angular",
+    "web",
+    "apps"
+  ],
   "license": "MIT",
   "ignore": [
     "**/.*",
@@ -13,7 +20,7 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~2.1.4",
+    "foundation-apps": "~1.1.0",
     "underscore": "~1.8.3"
   }
 }

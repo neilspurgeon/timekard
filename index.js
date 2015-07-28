@@ -9,11 +9,13 @@ var express = require("express"),
 		session = require("express-session");
 
 var views = path.join(__dirname, "views");
+var public = path.join(__dirname, "public");
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(express.static("public"));
 app.use(express.static("bower_components"));
 app.use(express.static("views"));
+app.use(express.static("public/build"));
 
 app.use(session({
 	secret: 'super secret',
@@ -67,7 +69,8 @@ app.get("/", function (req, res) {
 		console.log("has session");
 		//res.redirect("/app");
 	} else {
-		res.sendFile(path.join(views, "home.html"));
+		var rootPath = path.join(public, "build/index.html");
+		res.sendFile(rootPath);
 	}
 });
 
