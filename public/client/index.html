@@ -13,12 +13,14 @@
   <body>
     <div class="grid-frame vertical">
 
-      <div class="shrink title-bar">
+      <div class="shrink title-bar" ng-controller="NavCtrl">
         <span class="left"><a href="/app/"><img id="timekard-logo" src="/dist/img/timekard-logo.svg" alt="TimeKard" /></a></span>
         <span class="right nav-links">
+          {{ name }}
           <a href="" id="log-out">Log Out</a>
         </span>
       </div>
+      <a ui-sref="app">App</a>
 
       <div ui-view class="grid-content">
       </div>

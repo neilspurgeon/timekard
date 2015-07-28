@@ -44,9 +44,10 @@ var paths = {
   ],
   // These files are for your app's JavaScript
   appJS: [
-    'public/client/assets/js/app.js'
+    'public/client/assets/js/app.js',
+    'public/client/assets/js/**/*.js'
   ]
-}
+};
 
 // 3. TASKS
 // - - - - - - - - - - - - - - -
