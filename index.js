@@ -117,7 +117,7 @@ app.post("/login", function (req, res) {
 // Log Out User
 app.post("/logout", function (req, res) {
 	  req.logout();
-	  res.send(201);
+	  res.redirect("/");
 });
 
 // Get User Profile

@@ -14,17 +14,45 @@
     <div class="grid-frame vertical">
 
       <div class="shrink title-bar" ng-controller="NavCtrl">
-        <span class="left"><a href="/app/"><img id="timekard-logo" src="/dist/img/timekard-logo.svg" alt="TimeKard" /></a></span>
+        <span class="left"><a href="/app/"><img id="timekard-logo" src="/assets/img/timekard-logo.svg" alt="TimeKard" /></a></span>
         <span class="right nav-links">
-          {{ name }}
-          <a href="" id="log-out">Log Out</a>
+          <a zf-open="login">Login</a>
+          <a zf-open="createAccount">Create Account</a>
+          <form method="post" action="/logout">
+            <button>logout</button>
+          </form>
         </span>
       </div>
       <a ui-sref="app">App</a>
 
       <div ui-view class="grid-content">
       </div>
-    
     </div>
+
+    <!-- MODALS -->
+
+    <div zf-modal="" id="createAccount">
+      <h3>Create New Account</h3>
+      <a zf-close="" class="close-button">×</a>
+      <form method="POST" action="/users" >
+        <input type="text" name="user[name][first]" placeholder="first name">
+        <input type="text" name="user[name][last]" placeholder="last name">
+        <input type="text" name="user[email]" placeholder="email">
+        <input type="password" name="user[password]" placeholder="password">
+        <input type="password" name="user[password-confirm]" placeholder="confirm password">
+        <button>Submit</button>
+      </form>
+    </div>
+
+    <div zf-modal="" id="login">
+      <h3>User Login</h3>
+      <a zf-close="" class="close-button">×</a>
+      <form method="POST" action="/users" >
+        <input type="text" name="user[email]" placeholder="email">
+        <input type="password" name="user[password]" placeholder="password">
+        <button>Log In</button>
+      </form>
+    </div>
+
   </body>
 </html>
