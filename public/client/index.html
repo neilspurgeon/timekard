@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Foundation for Apps</title>
+    <title>timekard</title>
     <link href="/assets/css/app.css" rel="stylesheet" type="text/css">
     <script src="/assets/js/foundation.js"></script>
     <script src="/assets/js/templates.js"></script>
@@ -12,13 +12,17 @@
   </head>
   <body>
     <div class="grid-frame vertical">
-      <div class="grid-content shrink" style="padding: 0;">
-        <ul class="primary condense menu-bar">
-          <li><a><strong>Foundation for Apps</strong></a></li>
-        </ul>
+
+      <div class="shrink title-bar">
+        <span class="left"><a href="/app/"><img id="timekard-logo" src="/dist/img/timekard-logo.svg" alt="TimeKard" /></a></span>
+        <span class="right nav-links">
+          <a href="" id="log-out">Log Out</a>
+        </span>
       </div>
+
       <div ui-view class="grid-content">
       </div>
+    
     </div>
   </body>
 </html>
