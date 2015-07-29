@@ -49,6 +49,12 @@ app.use("/", function (req, res, next) {
 
 });
 
+app.all('/*', function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
+    next();
+});
+
 
 // ROUTES
 // ==========================================================
@@ -69,10 +75,10 @@ app.get("/", function (req, res) {
 //============
 
 // Get User html layout 
-app.get("/signup", function (req, res) {
-	var signupPath = path.join(views, "signup.html");
-	res.sendFile(signupPath);
-});
+// app.get("/signup", function (req, res) {
+// 	var signupPath = path.join(views, "signup.html");
+// 	res.sendFile(signupPath);
+// });
 
 // Create User
 app.post("/users", function (req, res) {
@@ -85,31 +91,31 @@ app.post("/users", function (req, res) {
 			//console.log(user);
 			if (user) {
 				req.login(user);
-				res.redirect("/app");
+				// res.redirect("/app");
 			} else {
+				console.log(err.errors);
 				console.log("error: email already exists");
 			}
 		});
 });
 
 // Get Login html layout
-app.get("/login", function (req, res) {
-	var loginPath = path.join(views, "login.html");
-	res.sendFile(loginPath);
-});
+// app.get("/login", function (req, res) {
+// 	var loginPath = path.join(views, "login.html");
+// 	res.sendFile(loginPath);
+// });
 
 // Log In User 
 app.post("/login", function (req, res) {
-	var email = req.body.email;
-	var password = req.body.password;
-	console.log(email);
-	console.log(password);
+	var jsonData = JSON.parse(req.body.jsonStr);
+	var email = jsonData.email;
+	var password = jsonData.password;
 
 	db.User
 		.authenticate(email, password,
 		function (err, user) {
 			req.login(user);
-			console	.log(user);
+			console.log(user);
 			res.send(user);
 		});
 });
