@@ -27,7 +27,7 @@ var userSchema = new mongoose.Schema({
 								 }
 });
 
-userSchema.statics.createSecure = function (email, password, first, last, cb) {
+userSchema.statics.createSecure = function (email, password, passwordConfirm, first, last, cb) {
 	var that = this;
 	// hash the password
 	bcrypt.genSalt(function (err, salt) {

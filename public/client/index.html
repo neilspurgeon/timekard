@@ -32,16 +32,17 @@
     <!-- MODALS -->
 
     <div ng-controller="MainCtrl">
+
       <div zf-modal="" id="createAccount">
         <h3>Create New Account</h3>
         <a zf-close="" class="close-button">×</a>
-        <form method="POST" action="/users" >
-          <input type="text" name="user[name][first]" placeholder="first name">
-          <input type="text" name="user[name][last]" placeholder="last name">
-          <input type="text" name="user[email]" placeholder="email">
-          <input type="password" name="user[password]" placeholder="password">
-          <input type="password" name="user[password-confirm]" placeholder="confirm password">
-          <button>Submit</button>
+        <form ng-submit="createAccount()">
+          <input type="text" ng-model="formData.firstName" placeholder="First Name">
+          <input type="text" ng-model="formData.lastName" placeholder="Last Name">
+          <input type="text" ng-model="formData.email" placeholder="Email">
+          <input type="password" ng-model="formData.password" placeholder="Password">
+          <input type="password" ng-model="formData.passwordConfirm"placeholder="Confirm Password">
+          <button type="submit">Submit</button>
         </form>
       </div>
 
@@ -49,8 +50,8 @@
         <h3>User Login</h3>
         <a zf-close="" class="close-button">×</a>
         <form ng-submit="login()">
-          <input type="text" ng-model="formData.email" placeholder="email">
-          <input type="password" ng-model="formData.password" placeholder="password">
+          <input type="text" ng-model="formData.email" placeholder="Email">
+          <input type="password" ng-model="formData.password" placeholder="Password">
           <button type="submit">Log In</button>
         </form>
       </div>

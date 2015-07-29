@@ -64,7 +64,6 @@ app.get("/", function (req, res) {
 	if(req.session.userId) {
 		currentSession = req.session.userId;
 		console.log("has session");
-		//res.redirect("/app");
 	} else {
 		var rootPath = path.join(public, "build/index.html");
 		res.sendFile(rootPath);
@@ -82,16 +81,16 @@ app.get("/", function (req, res) {
 
 // Create User
 app.post("/users", function (req, res) {
-	var user = req.body.user;
-	console.log(user.name);
+	var user = JSON.parse(req.body.jsonStr);
+	console.log(user);
 	
 		db.User
-		.createSecure(user.email, user.password, user.name.first, user.name.last,
+		.createSecure(user.email, user.password, user.passwordConfirm, user.firstName, user.lastName,
 		function (err, user) {
 			//console.log(user);
 			if (user) {
 				req.login(user);
-				// res.redirect("/app");
+				res.send(201);
 			} else {
 				console.log(err.errors);
 				console.log("error: email already exists");
@@ -123,7 +122,7 @@ app.post("/login", function (req, res) {
 // Log Out User
 app.post("/logout", function (req, res) {
 	  req.logout();
-	  res.redirect("/");
+	  res.send(200);
 });
 
 // Get User Profile
