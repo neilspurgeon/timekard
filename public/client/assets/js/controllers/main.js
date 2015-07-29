@@ -3,22 +3,8 @@ var app = angular.module('application');
 app.controller('MainCtrl', ['$scope', '$http', '$location', 
   function($scope, $http, $location) {
 
+  $scope.currentUser = null;
   $scope.formData = {};
-
-  $scope.login = function() {
-    var jsonData = 'jsonStr='+JSON.stringify($scope.formData);
-
-    $http({
-      url: '/login',
-      method: 'POST',
-      data: jsonData,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    }).success(function(data) {
-      $location.path('/app');
-    }).error(function(err){
-      console.log(err);
-    });
-  };
 
   $scope.createAccount = function() {
     var jsonData = 'jsonStr='+JSON.stringify($scope.formData);
@@ -30,7 +16,24 @@ app.controller('MainCtrl', ['$scope', '$http', '$location',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     }).success(function(data) {
       $location.path('/app');
+      $scope.currentUser = data;
       console.log(data);
+    }).error(function(err){
+      console.log(err);
+    });
+  };
+
+  $scope.login = function() {
+    var jsonData = 'jsonStr='+JSON.stringify($scope.formData);
+
+    $http({
+      url: '/login',
+      method: 'POST',
+      data: jsonData,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    }).success(function(data) {
+      $location.path('/app');
+      $scope.currentUser = data;
     }).error(function(err){
       console.log(err);
     });
@@ -40,6 +43,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$location',
     $http.post('/logout')
     .success(function() {
       $location.path('/');
+      $scope.currentUser = null;
     })
     .error(function(err) {
       console.log(err);

@@ -16,20 +16,20 @@
       <div class="shrink title-bar" ng-controller="MainCtrl">
         <span class="left"><a href="/app/"><img id="timekard-logo" src="/assets/img/timekard-logo.svg" alt="TimeKard" /></a></span>
         <span class="right nav-links">
-          <a zf-open="login">Login</a>
-          <a zf-open="createAccount">Create Account</a>
-          <a href="" ng-click="logout()">logout</button>
+          <a ui-sref="login">Login</a>
+          <a ui-sref="createAccount">Create Account</a>
+          <a href="" ng-click="logout()" ng-show="!currentUser">logout</button>
         </span>
       </div>
-      <a ui-sref="app">App</a>
-
+      <a ui-sref="app">app</a>
       <div ui-view class="grid-content">
       </div>
+    
     </div>
 
     <!-- MODALS -->
 
-    <div ng-controller="MainCtrl">
+<!--     <div ng-controller="MainCtrl">
 
       <div zf-modal="" id="createAccount">
         <h3>Create New Account</h3>
@@ -53,7 +53,7 @@
           <button type="submit">Log In</button>
         </form>
       </div>
-    </div>
+    </div> -->
 
   </body>
 </html>

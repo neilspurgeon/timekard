@@ -114,8 +114,10 @@ app.post("/login", function (req, res) {
 		.authenticate(email, password,
 		function (err, user) {
 			req.login(user);
-			console.log(user);
-			res.send(user);
+			// to prevent exposing hashed password, we're only sending necessary info
+			var userData = {"_id": user._id, "email": user.email, "name": {"first": user.name.first, "last": user.name.last}};
+			console.log(userData);
+			res.send(userData);
 		});
 });
 
