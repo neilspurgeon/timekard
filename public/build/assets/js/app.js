@@ -35,7 +35,8 @@
 
 var app = angular.module('application');
 
-app.controller('MainCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+app.controller('MainCtrl', ['$scope', '$http', '$location', 
+  function($scope, $http, $location) {
 
   $scope.formData = {};
 
@@ -66,6 +67,16 @@ app.controller('MainCtrl', ['$scope', '$http', '$location', function($scope, $ht
       $location.path('/app');
       console.log(data);
     }).error(function(err){
+      console.log(err);
+    });
+  };
+
+  $scope.logout = function() {
+    $http.post('/logout')
+    .success(function() {
+      $location.path('/');
+    })
+    .error(function(err) {
       console.log(err);
     });
   };
