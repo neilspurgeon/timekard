@@ -26,6 +26,13 @@ app.use(session({
 // MIDDLEWARE
 // ==========================================================
 // ==========================================================
+
+app.all('/*', function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
+    next();
+});
+
 var loginHelpers = function (req, res, next) {
 
   req.login = function (user) {
@@ -53,28 +60,21 @@ var loginHelpers = function (req, res, next) {
 
 app.use(loginHelpers);
 
-app.all('/*', function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
-    next();
-});
-
 
 // ROUTES
 // ==========================================================
 // ==========================================================
-app.get("/", function (req, res) {
-	var currentSession;
-	console.log("/////////////");
-	if(req.session.userId) {
-		currentSession = req.session.userId;
-		console.log("has session");
-	} else {
-		var rootPath = path.join(public, "build/index.html");
-		res.sendFile(rootPath);
-		console.log("no session");
-	}
-});
+// app.get("/", function (req, res) {
+// 	var currentSession;
+// 	if(req.session.userId) {
+// 		currentSession = req.session.userId;
+// 		console.log("has session");
+// 	} else {
+// 		var rootPath = path.join(public, "build/index.html");
+// 		res.sendFile(rootPath);
+// 		console.log("no session");
+// 	}
+// });
 
 // USER ROUTES
 //============
