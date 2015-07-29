@@ -38,7 +38,7 @@ var app = angular.module('application');
 app.controller('MainCtrl', ['$scope', '$http', '$location', 
   function($scope, $http, $location) {
 
-  $scope.currentUser = null;
+  $scope.currentUser = {};
   $scope.formData = {};
 
   $scope.createAccount = function() {
@@ -52,7 +52,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$location',
     }).success(function(data) {
       $location.path('/app');
       $scope.currentUser = data;
-      console.log(data);
+      console.log($scope.currentUser);
     }).error(function(err){
       console.log(err);
     });
@@ -67,8 +67,10 @@ app.controller('MainCtrl', ['$scope', '$http', '$location',
       data: jsonData,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     }).success(function(data) {
-      $location.path('/app');
       $scope.currentUser = data;
+      $location.path('/app');
+      
+      console.log($scope.currentUser.email);
     }).error(function(err){
       console.log(err);
     });
@@ -84,6 +86,14 @@ app.controller('MainCtrl', ['$scope', '$http', '$location',
       console.log(err);
     });
   };
+
+  $http.get('/profile')
+  .success(function(data) {
+    console.log(data);
+  })
+  .error(function(err) {
+    console.log(err);
+  });
 
 }]);
 

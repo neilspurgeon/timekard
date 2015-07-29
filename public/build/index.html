@@ -16,15 +16,17 @@
       <div class="shrink title-bar" ng-controller="MainCtrl">
         <span class="left"><a href="/app/"><img id="timekard-logo" src="/assets/img/timekard-logo.svg" alt="TimeKard" /></a></span>
         <span class="right nav-links">
+        {{currentUser}} 
           <a ui-sref="login">Login</a>
           <a ui-sref="createAccount">Create Account</a>
-          <a href="" ng-click="logout()" ng-show="!currentUser">logout</button>
+          <a href="" ng-click="logout()" ng-show="currentUser">logout</button>
         </span>
       </div>
+      
       <a ui-sref="app">app</a>
       <div ui-view class="grid-content">
+
       </div>
-    
     </div>
 
   </body>

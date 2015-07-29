@@ -18,36 +18,40 @@ app.use(express.static("views"));
 app.use(express.static("public/build"));
 
 app.use(session({
-	secret: 'super secret',
-	resave: false
+  secret: 'super secret',
+  resave: false,
+  saveUninitialized: true
 }));
 
 // MIDDLEWARE
 // ==========================================================
 // ==========================================================
-app.use("/", function (req, res, next) {
-	req.login = function (user) {
-		req.session.userId = user._id;
-	};
+var loginHelpers = function (req, res, next) {
 
-	req.currentUser = function (cb) {
-		db.User.findOne({
-			_id: req.session.userId
-		},
-		function (err, user) {
-			req.user = user;
-			cb(null, user);
-		});
-	};
+  req.login = function (user) {
+    req.session.userId = user._id;
+    req.user = user;
+    return user;
+  };
 
-	req.logout = function () {
-		req.session.userId = null;
-		req.user = null;
-	};
-	
-	next();
+  req.logout = function () {
+    req.session.userId = null;
+    req.user  = null;
+  };
 
-});
+  req.currentUser = function (cb) {
+    var userId = req.session.userId;
+    db.User.
+      findOne({
+        _id: userId
+      }, cb);
+  };
+
+  // careful to have this
+  next(); // real important
+};
+
+app.use(loginHelpers);
 
 app.all('/*', function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -61,12 +65,14 @@ app.all('/*', function(req, res, next) {
 // ==========================================================
 app.get("/", function (req, res) {
 	var currentSession;
+	console.log("/////////////");
 	if(req.session.userId) {
 		currentSession = req.session.userId;
 		console.log("has session");
 	} else {
 		var rootPath = path.join(public, "build/index.html");
 		res.sendFile(rootPath);
+		console.log("no session");
 	}
 });
 
@@ -129,8 +135,16 @@ app.post("/logout", function (req, res) {
 
 // Get User Profile
 app.get("/profile", function (req, res) {
-	req.currentUser(function (err, user){
-		res.send(user);
+	console.log("PROFILE")
+
+	req.currentUser(function (err, user) {
+	  if (!err) {
+	    res.send(user);
+	    console.log("PROFILE");
+	    console.log(user);
+	  } else {
+	    res.send(err);
+	  }
 	});
 });
 
