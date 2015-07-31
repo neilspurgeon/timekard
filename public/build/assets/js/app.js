@@ -28,10 +28,19 @@
           leave: 'fadeOut'
         }
       })
+      .state('createAccount', {
+        url: '/createAccount',
+        templateUrl: 'templates/createAccount.html',
+        controller: 'UserCtrl',
+        animation: {
+          enter: 'slideInDown',
+          leave: 'fadeOut'
+        }
+      })
       .state('login', {
         url: '/login',
         templateUrl: 'templates/login.html',
-        controller: 'MainCtrl',
+        controller: 'UserCtrl',
         animation: {
           enter: 'slideInDown',
           leave: 'fadeOut'
@@ -49,6 +58,12 @@
 })();
 var app = angular.module('application');
 
+app.factory('Client', function($resource) {
+  return $resource('/clients');
+});
+
+var app = angular.module('application');
+
 app.controller('EntriesCtrl', ['$scope', 'Client', 
   function($scope, Client) {
     $scope.entries = Client.query();
@@ -56,7 +71,14 @@ app.controller('EntriesCtrl', ['$scope', 'Client',
 ]);
 var app = angular.module('application');
 
-app.controller('MainCtrl', ['$scope', '$http', '$location', 
+app.controller('MainCtrl', ['$scope', 
+  function($scope) {
+
+  }
+]);
+var app = angular.module('application');
+
+app.controller('UserCtrl', ['$scope', '$http', '$location', 
   function($scope, $http, $location) {
 
   $scope.currentUser = $http.get('/profile');
@@ -117,9 +139,3 @@ app.controller('MainCtrl', ['$scope', '$http', '$location',
 }]);
 
 
-
-var app = angular.module('application');
-
-app.factory('Client', function($resource) {
-  return $resource('/clients');
-});

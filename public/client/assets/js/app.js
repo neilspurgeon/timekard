@@ -28,10 +28,19 @@
           leave: 'fadeOut'
         }
       })
+      .state('createAccount', {
+        url: '/createAccount',
+        templateUrl: 'templates/createAccount.html',
+        controller: 'UserCtrl',
+        animation: {
+          enter: 'slideInDown',
+          leave: 'fadeOut'
+        }
+      })
       .state('login', {
         url: '/login',
         templateUrl: 'templates/login.html',
-        controller: 'MainCtrl',
+        controller: 'UserCtrl',
         animation: {
           enter: 'slideInDown',
           leave: 'fadeOut'
