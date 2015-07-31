@@ -7,14 +7,14 @@
     <link href="/assets/css/app.css" rel="stylesheet" type="text/css">
     <script src="/assets/js/foundation.js"></script>
     <script src="/assets/js/templates.js"></script>
-    <script src="/assets/js/routes.js"></script>
+    <script src="/angular-resource/angular-resource.js"></script>
     <script src="/assets/js/app.js"></script>
   </head>
   <body>
     <div class="grid-frame vertical">
 
       <div class="shrink title-bar" ng-controller="MainCtrl">
-        <span class="left"><a href="/app/"><img id="timekard-logo" src="/assets/img/timekard-logo.svg" alt="TimeKard" /></a></span>
+        <span class="left"><a href="/#!/"><img id="timekard-logo" src="/assets/img/timekard-logo.svg" alt="TimeKard" /></a></span>
         <span class="right nav-links">
         {{currentUser}} 
           <a ui-sref="login">Login</a>

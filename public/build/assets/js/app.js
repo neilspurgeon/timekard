@@ -4,27 +4,40 @@
   angular.module('application', [
     'ui.router',
     'ngAnimate',
+    'ngResource',
 
     //foundation
-    'foundation',
-    'foundation.dynamicRouting',
-    'foundation.dynamicRouting.animations'
+    'foundation'
+    // 'foundation.dynamicRouting',
+    // 'foundation.dynamicRouting.animations'
   ])
     .config(config)
     .run(run)
   ;
 
-  config.$inject = ['$urlRouterProvider', '$locationProvider'];
+  config.$inject = ['$stateProvider', '$urlRouterProvider'];
 
-  function config($urlProvider, $locationProvider) {
-    $urlProvider.otherwise('/');
+  function config($stateProvider, $urlRouterProvider) {
+    $stateProvider
+      .state('app', {
+        url: '/app',
+        templateUrl: 'templates/app.html',
+        controller: 'MainCtrl',
+        animation: {
+          enter: 'slideInDown',
+          leave: 'fadeOut'
+        }
+      })
+      .state('login', {
+        url: '/login',
+        templateUrl: 'templates/login.html',
+        controller: 'MainCtrl',
+        animation: {
+          enter: 'slideInDown',
+          leave: 'fadeOut'
+        }
+      });
 
-    $locationProvider.html5Mode({
-      enabled:false,
-      requireBase: false
-    });
-
-    $locationProvider.hashPrefix('!');
   }
 
   function run() {
@@ -32,13 +45,19 @@
   }
 
 })();
+var app = angular.module('application');
 
+app.controller('EntriesCtrl', ['$scope', 'Client', 
+  function($scope, Client) {
+    $scope.entries = Client.query();
+  }
+]);
 var app = angular.module('application');
 
 app.controller('MainCtrl', ['$scope', '$http', '$location', 
   function($scope, $http, $location) {
 
-  $scope.currentUser = {};
+  $scope.currentUser = $http.get('/profile');
   $scope.formData = {};
 
   $scope.createAccount = function() {
@@ -66,7 +85,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$location',
       method: 'POST',
       data: jsonData,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    }).success(function(data) {
+    }).success( function(data) {
+
       $scope.currentUser = data;
       $location.path('/app');
       
@@ -87,14 +107,17 @@ app.controller('MainCtrl', ['$scope', '$http', '$location',
     });
   };
 
-  $http.get('/profile')
-  .success(function(data) {
-    console.log(data);
-  })
-  .error(function(err) {
-    console.log(err);
-  });
+  // $http.get('/profile')
+  // .then(function(data) {
+  //   console.log(data);
+  // });
 
 }]);
 
 
+
+var app = angular.module('application');
+
+app.factory('Client', function($resource) {
+  return $resource('/clients');
+});

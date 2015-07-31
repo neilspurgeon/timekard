@@ -138,12 +138,12 @@ app.get("/profile", function (req, res) {
 	console.log("PROFILE")
 
 	req.currentUser(function (err, user) {
-	  if (!err) {
-	    res.send(user);
-	    console.log("PROFILE");
-	    console.log(user);
+	  if (user) {
+	  	console.log(user);
+	  	var userData = {"_id": user._id, "email": user.email, "name": {"first": user.name.first, "last": user.name.last}};
+	    res.send(userData);
 	  } else {
-	    res.send(err);
+	    res.send("No current user");
 	  }
 	});
 });
@@ -180,11 +180,11 @@ app.post("/clients", function (req, res) {
 // JOB ROUTES
 // ==========
 
-// Get Jobs html layout
-app.get("/jobs", function (req, res) {
-	var jobsPath = path.join(views, "jobs.html");
-	res.sendFile(jobsPath);
-});
+// // Get Jobs html layout
+// app.get("/jobs", function (req, res) {
+// 	var jobsPath = path.join(views, "jobs.html");
+// 	res.sendFile(jobsPath);
+// });
 
 // Get Jobs
 app.get("/clients/:id/jobs", function (req, res) {

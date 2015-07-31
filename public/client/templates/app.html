@@ -1,6 +1,41 @@
 ---
 name: app
 url: /app
+controller: EntriesCtrl
 ---
 
-asdasdasd
+{{ entries || "none" }}
+
+  <style>
+    .scroll-section {overflow-x: scroll;}
+  </style>
+
+<zf-panel id="projects" position="left">
+  <a href="#" zf-close>&times;</a>
+  <ul class="menu-bar vertical">
+    <li>
+      <a href="#">
+        <img src="http://placehold.it/50x50">
+        <span class="block-list-label">Amazing Project  &#x2730;</span>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <img src="http://placehold.it/50x50">
+        <span class="block-list-label">Amazing Project  &#x2730;</span>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <img src="http://placehold.it/50x50">
+        <span class="block-list-label">Amazing Project  &#x2730;</span>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <img src="http://placehold.it/50x50">
+        <span class="block-list-label">Amazing Project  &#x2730;</span>
+      </a>
+    </li>
+  </ul>
+</zf-panel>

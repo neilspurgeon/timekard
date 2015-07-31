@@ -3,7 +3,7 @@ var app = angular.module('application');
 app.controller('MainCtrl', ['$scope', '$http', '$location', 
   function($scope, $http, $location) {
 
-  $scope.currentUser = {};
+  $scope.currentUser = $http.get('/profile');
   $scope.formData = {};
 
   $scope.createAccount = function() {
@@ -31,7 +31,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$location',
       method: 'POST',
       data: jsonData,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    }).success(function(data) {
+    }).success( function(data) {
+
       $scope.currentUser = data;
       $location.path('/app');
       
@@ -52,13 +53,10 @@ app.controller('MainCtrl', ['$scope', '$http', '$location',
     });
   };
 
-  $http.get('/profile')
-  .success(function(data) {
-    console.log(data);
-  })
-  .error(function(err) {
-    console.log(err);
-  });
+  // $http.get('/profile')
+  // .then(function(data) {
+  //   console.log(data);
+  // });
 
 }]);
 

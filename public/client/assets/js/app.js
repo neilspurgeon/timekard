@@ -4,27 +4,40 @@
   angular.module('application', [
     'ui.router',
     'ngAnimate',
+    'ngResource',
 
     //foundation
-    'foundation',
-    'foundation.dynamicRouting',
-    'foundation.dynamicRouting.animations'
+    'foundation'
+    // 'foundation.dynamicRouting',
+    // 'foundation.dynamicRouting.animations'
   ])
     .config(config)
     .run(run)
   ;
 
-  config.$inject = ['$urlRouterProvider', '$locationProvider'];
+  config.$inject = ['$stateProvider', '$urlRouterProvider'];
 
-  function config($urlProvider, $locationProvider) {
-    $urlProvider.otherwise('/');
+  function config($stateProvider, $urlRouterProvider) {
+    $stateProvider
+      .state('app', {
+        url: '/app',
+        templateUrl: 'templates/app.html',
+        controller: 'MainCtrl',
+        animation: {
+          enter: 'slideInDown',
+          leave: 'fadeOut'
+        }
+      })
+      .state('login', {
+        url: '/login',
+        templateUrl: 'templates/login.html',
+        controller: 'MainCtrl',
+        animation: {
+          enter: 'slideInDown',
+          leave: 'fadeOut'
+        }
+      });
 
-    $locationProvider.html5Mode({
-      enabled:false,
-      requireBase: false
-    });
-
-    $locationProvider.hashPrefix('!');
   }
 
   function run() {

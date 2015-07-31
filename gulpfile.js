@@ -9,7 +9,7 @@ var $        = require('gulp-load-plugins')();
 var argv     = require('yargs').argv;
 var gulp     = require('gulp');
 var rimraf   = require('rimraf');
-var router   = require('front-router');
+// var router   = require('front-router');
 var sequence = require('run-sequence');
 
 // Check for --production flag
@@ -67,15 +67,15 @@ gulp.task('copy', function() {
 });
 
 // Copies your app's page templates and generates URLs for them
-gulp.task('copy:templates', function() {
-  return gulp.src('./public/client/templates/**/*.html')
-    .pipe(router({
-      path: 'public/build/assets/js/routes.js',
-      root: 'public/client'
-    }))
-    .pipe(gulp.dest('./public/build/templates'))
-  ;
-});
+// gulp.task('copy:templates', function() {
+//   return gulp.src('./public/client/templates/**/*.html')
+//     .pipe(router({
+//       path: 'public/build/assets/js/routes.js',
+//       root: 'public/client'
+//     }))
+//     .pipe(gulp.dest('./public/build/templates'))
+//   ;
+// });
 
 // Compiles the Foundation for Apps directive partials into a single JavaScript file
 gulp.task('copy:foundation', function(cb) {
