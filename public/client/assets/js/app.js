@@ -38,6 +38,8 @@
         }
       });
 
+      $urlRouterProvider.otherwise('/');
+
   }
 
   function run() {
