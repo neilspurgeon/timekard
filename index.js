@@ -8,6 +8,8 @@ var bodyParser  = require("body-parser");
 var path        = require("path");
 var views       = path.join(__dirname, "views");
 var public      = path.join(__dirname, "public");
+var jwt         = require('jsonwebtoken');
+
 
 app.use(express.static("bower_components"));
 app.use(express.static("public/build"));
@@ -61,8 +63,9 @@ app.post("/login", function (req, res) {
 		.authenticate(email, password,
 		function (err, user) {
       if (user) {
+        var token = jwt.sign(user, 'secret.secretToken', { expiresInMinutes: 60 });
         console.log("success");
-        return res.send(user);
+        return res.json({token: token});
       }
       console.log("error");
       return res.send(err);
