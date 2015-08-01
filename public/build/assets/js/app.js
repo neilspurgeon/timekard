@@ -58,6 +58,10 @@
 })();
 
 var app = angular.module('application');
+
+app.config(function ($httpProvider) {
+    $httpProvider.interceptors.push('TokenInterceptor');
+});
 app.factory('AuthenticationService', function() {
   var auth = {
     isLogged: false
@@ -68,6 +72,40 @@ app.factory('Client', function($resource) {
   return $resource('/clients');
 });
 
+app.factory('TokenInterceptor', function ($q, $window, $location, AuthenticationService) {
+    return {
+        request: function (config) {
+            config.headers = config.headers || {};
+            if ($window.sessionStorage.token) {
+                config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
+            }
+            return config;
+        },
+ 
+        requestError: function(rejection) {
+            return $q.reject(rejection);
+        },
+ 
+        /* Set Authentication.isAuthenticated to true if 200 received */
+        response: function (response) {
+            if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthenticationService.isAuthenticated) {
+                AuthenticationService.isAuthenticated = true;
+            }
+            return response || $q.when(response);
+        },
+ 
+        /* Revoke client authentication if 401 is received */
+        responseError: function(rejection) {
+            if (rejection != null && rejection.status === 401 && ($window.sessionStorage.token || AuthenticationService.isAuthenticated)) {
+                delete $window.sessionStorage.token;
+                AuthenticationService.isAuthenticated = false;
+                $location.path("/admin/login");
+            }
+ 
+            return $q.reject(rejection);
+        }
+    };
+});
 app.factory('UserService', function($http) {
   return {
     logIn: function(email, password) {
@@ -82,13 +120,23 @@ app.controller('EntriesCtrl', ['$scope', 'Client',
     $scope.entries = Client.query();
   }
 ]);
-app.controller('MainCtrl', ['$scope', 
-  function($scope) {
+app.controller('MainCtrl', ['$scope', '$http', 
+  function($scope, $http) {
 
+    $scope.getClients = function() {
+      console.log('get clients...');
+      $http.get('/api/clients')
+      .success(function(data) {
+        console.log(data);
+      })
+      .error(function(err) {
+        console.log(err);
+      });
+    };
   }
 ]);
-app.controller('UserCtrl', ['$scope', '$http', '$location', 'UserService', 'AuthenticationService',
-  function($scope, $http, $location, UserService, AuthenticationService) {
+app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', 'UserService', 'AuthenticationService',
+  function($scope, $http, $location, $window, UserService, AuthenticationService) {
 
   $scope.createAccount = function() {
     var jsonData = 'jsonStr='+JSON.stringify($scope.formData);
@@ -113,7 +161,7 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', 'UserService', 'Auth
       console.log(email + password);
       UserService.logIn(email, password).success(function(data) {
         AuthenticationService.isLogged = true;
-        // $window.sessionStorage.token = data.token;
+        $window.sessionStorage.token = data.token;
         $location.path('/app');
         console.log(data);
       }).error(function(status, data) {

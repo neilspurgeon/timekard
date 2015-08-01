@@ -1,5 +1,5 @@
-app.controller('UserCtrl', ['$scope', '$http', '$location', 'UserService', 'AuthenticationService',
-  function($scope, $http, $location, UserService, AuthenticationService) {
+app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', 'UserService', 'AuthenticationService',
+  function($scope, $http, $location, $window, UserService, AuthenticationService) {
 
   $scope.createAccount = function() {
     var jsonData = 'jsonStr='+JSON.stringify($scope.formData);
@@ -24,7 +24,7 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', 'UserService', 'Auth
       console.log(email + password);
       UserService.logIn(email, password).success(function(data) {
         AuthenticationService.isLogged = true;
-        // $window.sessionStorage.token = data.token;
+        $window.sessionStorage.token = data.token;
         $location.path('/app');
         console.log(data);
       }).error(function(status, data) {

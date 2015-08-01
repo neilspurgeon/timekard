@@ -58,3 +58,7 @@
 })();
 
 var app = angular.module('application');
+
+app.config(function ($httpProvider) {
+    $httpProvider.interceptors.push('TokenInterceptor');
+});
