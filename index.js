@@ -9,6 +9,7 @@ var path        = require("path");
 var views       = path.join(__dirname, "views");
 var public      = path.join(__dirname, "public");
 var jwt         = require('jsonwebtoken');
+var secret      = require('./config/secret.js');
 
 
 app.use(express.static("bower_components"));
@@ -63,17 +64,12 @@ app.post("/login", function (req, res) {
 		.authenticate(email, password,
 		function (err, user) {
       if (user) {
-        var token = jwt.sign(user, 'secret.secretToken', { expiresInMinutes: 60 });
+        var token = jwt.sign(user, secret.secretToken, { expiresInMinutes: 60 });
         console.log("success");
         return res.json({token: token});
       }
       console.log("error");
       return res.send(err);
-			// req.login(user);
-			// to prevent exposing hashed password, we're only sending necessary info
-			// var userData = {"_id": user._id, "email": user.email, "name": {"first": user.name.first, "last": user.name.last}};
-			// console.log(userData);
-			// res.send(userData);
 		});
 });
 
