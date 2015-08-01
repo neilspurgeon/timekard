@@ -8,5 +8,14 @@ app.controller('MainCtrl', ['$scope', '$http', '$state',
       $scope.clients = result.data;
     });
 
+    $scope.startJob = function() {
+      var jobId = this.job._id;
+      console.log(jobId);
+      $http.put('/api/jobs/' + jobId + '/start')
+      .then(function(result) {
+        console.log(result);
+      });
+    };
+
   }
 ]);

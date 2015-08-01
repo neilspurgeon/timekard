@@ -5,6 +5,7 @@
       <li ng-repeat="job in client.jobs">
         {{job.name}}
         {{job.totalTime}}
+        <button ng-click="startJob()">Start</button>
       </li>
     </ul>
   </li>
