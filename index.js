@@ -163,9 +163,12 @@ app.put("/api/:clientId/jobs/:id/start", function (req, res) {
 	var clientId = req.params.clientId;
 	
 	db.Client.startTime(jobId, clientId,
-			function (err, job) {
-				res.send(201);
-		});
+		function (err, job) {
+			if (!err) {
+        return res.send(200);
+      }
+      return res.send(err);
+	});
 });
 
 // Stop Timing Job
@@ -175,7 +178,10 @@ app.put("/api/:clientId/jobs/:id/stop", function (req, res) {
 
 	db.Client.stopTime(jobId, clientId,
 		function (err, job) {
-			res.send(201);
+			if (!err) {
+        return res.send(200);
+      }
+      return res.send(err);
 	});
 });
 
