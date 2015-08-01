@@ -1,15 +1,12 @@
-app.controller('MainCtrl', ['$scope', '$http', 
-  function($scope, $http) {
+app.controller('MainCtrl', ['$scope', '$http', '$state', 
+  function($scope, $http, $state) {
+    
+    $scope.clients = [];
 
-    $scope.getClients = function() {
-      console.log('get clients...');
-      $http.get('/api/clients')
-      .success(function(data) {
-        console.log(data);
-      })
-      .error(function(err) {
-        console.log(err);
-      });
-    };
+    $http.get('/api/clients')
+    .then(function(result) {
+      $scope.clients = result.data;
+    });
+
   }
 ]);

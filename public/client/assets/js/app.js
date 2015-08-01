@@ -19,14 +19,10 @@
 
   function config($stateProvider, $urlRouterProvider) {
     $stateProvider
-      .state('app', {
-        url: '/app',
-        templateUrl: 'templates/app.html',
-        controller: 'MainCtrl',
-        animation: {
-          enter: 'slideInDown',
-          leave: 'fadeOut'
-        }
+      .state('main', {
+        url: '/',
+        templateUrl: 'templates/main.html',
+        controller: 'MainCtrl'
       })
       .state('createAccount', {
         url: '/createAccount',
@@ -47,7 +43,7 @@
         }
       });
 
-      $urlRouterProvider.otherwise('/');
+      $urlRouterProvider.otherwise('/home');
 
   }
 

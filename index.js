@@ -84,17 +84,13 @@ app.post("/logout", function (req, res) {
 
 // Get User Profile
 app.get("/api/profile", function (req, res) {
-	console.log("PROFILE");
+  var user = req.user;
 
-	req.currentUser(function (err, user) {
-	  if (user) {
-	  	console.log(user);
-	  	var userData = {"_id": user._id, "email": user.email, "name": {"first": user.name.first, "last": user.name.last}};
-	    res.send(userData);
-	  } else {
-	    res.send("No current user");
-	  }
-	});
+  db.User.findOne({
+    _id: user._id
+  }, function(err, user) {
+    res.send(user);
+  });
 });
 
 // CLIENT ROUTES
@@ -106,10 +102,9 @@ app.get("/api/clients", function (req, res) {
 
 	db.Client.find({
 		userId: user._id
-	},
-		function (err, clients) {
+	}, function (err, clients) {
 			res.status(202).send(clients);
-		});
+	});
 });
 
 // Create Clients
@@ -130,13 +125,12 @@ app.post("/api/clients", function (req, res) {
 // ==========
 
 // Get Jobs
-app.get("/api/clients/:id/jobs", function (req, res) {
-		db.Client.find({
+app.get("/api/clients/:id/jobs", function (req, res) {  
+  db.Client.find({
 		_id: req.params.id 
-	},
-		function (err, jobs) {
+	}, function (err, jobs) {
 			res.send(201, jobs);
-		});
+	});
 });
 
 // Create Job
@@ -145,8 +139,8 @@ app.post("/api/clients/:id/jobs", function (req, res) {
 	var jobName = req.body.name;
 	
 	db.Client.update(
-		{ _id: clientId},
-		{ $push: { jobs: { name: jobName } } },
+		{_id: clientId},
+		{$push: {jobs: {name: jobName}}},
 		function (err, success) {
 			res.send(201);
 		});

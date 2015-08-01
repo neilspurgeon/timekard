@@ -1,3 +1,3 @@
 app.factory('Client', function($resource) {
-  return $resource('/clients');
+  return $resource('/api/clients');
 });
