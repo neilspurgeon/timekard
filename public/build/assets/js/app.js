@@ -56,33 +56,39 @@
   }
 
 })();
-var app = angular.module('application');
 
+var app = angular.module('application');
+app.factory('AuthenticationService', function() {
+  var auth = {
+    isLogged: false
+  };
+  return auth;
+});
 app.factory('Client', function($resource) {
   return $resource('/clients');
 });
 
-var app = angular.module('application');
-
+app.factory('UserService', function($http) {
+  return {
+    logIn: function(email, password) {
+        return $http.post('/login', {email: email, password: password});
+    },
+    logOut: function() {
+    }
+  };
+});
 app.controller('EntriesCtrl', ['$scope', 'Client', 
   function($scope, Client) {
     $scope.entries = Client.query();
   }
 ]);
-var app = angular.module('application');
-
 app.controller('MainCtrl', ['$scope', 
   function($scope) {
 
   }
 ]);
-var app = angular.module('application');
-
-app.controller('UserCtrl', ['$scope', '$http', '$location', 
-  function($scope, $http, $location) {
-
-  $scope.currentUser = $http.get('/profile');
-  $scope.formData = {};
+app.controller('UserCtrl', ['$scope', '$http', '$location', 'UserService', 'AuthenticationService',
+  function($scope, $http, $location, UserService, AuthenticationService) {
 
   $scope.createAccount = function() {
     var jsonData = 'jsonStr='+JSON.stringify($scope.formData);
@@ -101,23 +107,20 @@ app.controller('UserCtrl', ['$scope', '$http', '$location',
     });
   };
 
-  $scope.login = function() {
-    var jsonData = 'jsonStr='+JSON.stringify($scope.formData);
-
-    $http({
-      url: '/login',
-      method: 'POST',
-      data: jsonData,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    }).success( function(data) {
-
-      $scope.currentUser = data;
-      $location.path('/app');
-      
-      console.log($scope.currentUser.email);
-    }).error(function(err){
-      console.log(err);
-    });
+  $scope.logIn = function(email, password) {
+    console.log(email, password);
+    if (email !== undefined && password !== undefined) {
+      console.log(email + password);
+      UserService.logIn(email, password).success(function(data) {
+        AuthenticationService.isLogged = true;
+        // $window.sessionStorage.token = data.token;
+        $location.path('/app');
+        console.log(data);
+      }).error(function(status, data) {
+        console.log(status);
+        console.log(data);
+      });
+    }
   };
 
   $scope.logout = function() {
@@ -130,11 +133,6 @@ app.controller('UserCtrl', ['$scope', '$http', '$location',
       console.log(err);
     });
   };
-
-  // $http.get('/profile')
-  // .then(function(data) {
-  //   console.log(data);
-  // });
 
 }]);
 
