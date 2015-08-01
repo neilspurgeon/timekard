@@ -1,20 +1,24 @@
 // REQUIRMENTS
 // ==========================================================
 // ==========================================================
-var express     = require("express");
-var app         = express();
-var db          = require("./models");
-var bodyParser  = require("body-parser");
-var path        = require("path");
-var views       = path.join(__dirname, "views");
-var public      = path.join(__dirname, "public");
-var jwt         = require('jsonwebtoken');
-var secret      = require('./config/secret.js');
+var express      = require("express");
+var app          = express();
+var db           = require("./models");
+var bodyParser   = require("body-parser");
+var path         = require("path");
+var views        = path.join(__dirname, "views");
+var public       = path.join(__dirname, "public");
+var jwt          = require('jsonwebtoken');
+var xJwt         = require('express-jwt');
+var secret       = require('./config/secret.js');
+var tokenManager = require('./config/tokenManager');
 
 
 app.use(express.static("bower_components"));
 app.use(express.static("public/build"));
 app.use(bodyParser());
+
+app.use('/api', xJwt({secret: secret.secretToken}));
 
 // MIDDLEWARE
 // ==========================================================
@@ -44,7 +48,6 @@ app.post("/users", function (req, res) {
 		db.User
 		.createSecure(user.email, user.password, user.passwordConfirm, user.firstName, user.lastName,
 		function (err, user) {
-			//console.log(user);
 			if (user) {
 				req.login(user);
 				res.send(201);
@@ -80,7 +83,7 @@ app.post("/logout", function (req, res) {
 });
 
 // Get User Profile
-app.get("/profile", function (req, res) {
+app.get("/api/profile", function (req, res) {
 	console.log("PROFILE");
 
 	req.currentUser(function (err, user) {
@@ -98,19 +101,19 @@ app.get("/profile", function (req, res) {
 //==============
 
 // Get Clients
-app.get("/clients", function (req, res) {
-	var user = req.session.userId;
+app.get("/api/clients", function (req, res) {
+  var user = req.user;
 
 	db.Client.find({
-		userId: user
+		userId: user._id
 	},
 		function (err, clients) {
-			res.send(clients);
+			res.status(202).send(clients);
 		});
 });
 
 // Create Clients
-app.post("/clients", function (req, res) {
+app.post("/api/clients", function (req, res) {
 	var clientName = req.body.name;
 	var user = req.session.userId;
 
@@ -127,7 +130,7 @@ app.post("/clients", function (req, res) {
 // ==========
 
 // Get Jobs
-app.get("/clients/:id/jobs", function (req, res) {
+app.get("/api/clients/:id/jobs", function (req, res) {
 		db.Client.find({
 		_id: req.params.id 
 	},
@@ -137,7 +140,7 @@ app.get("/clients/:id/jobs", function (req, res) {
 });
 
 // Create Job
-app.post("/clients/:id/jobs", function (req, res) {
+app.post("/api/clients/:id/jobs", function (req, res) {
 	var clientId = req.params.id;
 	var jobName = req.body.name;
 	
@@ -150,7 +153,7 @@ app.post("/clients/:id/jobs", function (req, res) {
 });
 
 // Delete Job
-app.delete("/jobs/:id/delete", function (req, res) {
+app.delete("/api/jobs/:id/delete", function (req, res) {
 	var jobId = req.params.id;
 	var clientId = req.body.id;
 
@@ -161,7 +164,7 @@ app.delete("/jobs/:id/delete", function (req, res) {
 });
 
 // Start Timing Job
-app.put("/jobs/:id/start", function (req, res) {
+app.put("/api/jobs/:id/start", function (req, res) {
 	var jobId = req.params.id;
 	var clientId = req.body.id;
 	
@@ -172,7 +175,7 @@ app.put("/jobs/:id/start", function (req, res) {
 });
 
 // Stop Timing Job
-app.put("/jobs/:id/stop", function (req, res) {
+app.put("/api/jobs/:id/stop", function (req, res) {
 	var jobId = req.params.id;
 	var clientId = req.body.id;
 
