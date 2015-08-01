@@ -9,12 +9,24 @@ app.controller('MainCtrl', ['$scope', '$http', '$state',
     });
 
     $scope.startJob = function() {
-      var jobId = this.job._id;
+      var job = this.job;
       var clientId = this.$parent.client._id;
       console.log(clientId);
-      $http.put('/api/' + clientId + '/jobs/' + jobId + '/start')
+      $http.put('/api/' + clientId + '/jobs/' + job._id + '/start')
       .then(function(result) {
         console.log(result);
+        job.clockOn = true;
+      });
+    };
+
+    $scope.stopJob = function() {
+      var job = this.job;
+      var clientId = this.$parent.client._id;
+      console.log(clientId);
+      $http.put('/api/' + clientId + '/jobs/' + job._id + '/stop')
+      .then(function(result) {
+        console.log(result);
+        job.clockOn = false;
       });
     };
 
