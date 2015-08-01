@@ -158,9 +158,9 @@ app.delete("/api/jobs/:id/delete", function (req, res) {
 });
 
 // Start Timing Job
-app.put("/api/jobs/:id/start", function (req, res) {
+app.put("/api/:clientId/jobs/:id/start", function (req, res) {
 	var jobId = req.params.id;
-	var clientId = req.body.id;
+	var clientId = req.params.clientId;
 	
 	db.Client.startTime(jobId, clientId,
 			function (err, job) {
@@ -169,9 +169,9 @@ app.put("/api/jobs/:id/start", function (req, res) {
 });
 
 // Stop Timing Job
-app.put("/api/jobs/:id/stop", function (req, res) {
+app.put("/api/:clientId/jobs/:id/stop", function (req, res) {
 	var jobId = req.params.id;
-	var clientId = req.body.id;
+	var clientId = req.params.clientId;
 
 	db.Client.stopTime(jobId, clientId,
 		function (err, job) {
