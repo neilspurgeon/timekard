@@ -1,89 +1,37 @@
 // REQUIRMENTS
 // ==========================================================
 // ==========================================================
-var express = require("express"),
-		app = express(),
-		db = require("./models"),
-		bodyParser = require("body-parser"),
-		path = require("path"),
-		session = require("express-session");
+var express     = require("express");
+var app         = express();
+var db          = require("./models");
+var bodyParser  = require("body-parser");
+var path        = require("path");
+var views       = path.join(__dirname, "views");
+var public      = path.join(__dirname, "public");
 
-var views = path.join(__dirname, "views");
-var public = path.join(__dirname, "public");
-app.use(bodyParser.urlencoded({extended: true}));
-
-app.use(express.static("public"));
 app.use(express.static("bower_components"));
-app.use(express.static("views"));
 app.use(express.static("public/build"));
-
-app.use(session({
-  secret: 'super secret',
-  resave: false,
-  saveUninitialized: true
-}));
+app.use(bodyParser());
 
 // MIDDLEWARE
 // ==========================================================
 // ==========================================================
 
-app.all('/*', function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
-    next();
+app.all('*', function(req, res, next) {
+  res.set('Access-Control-Allow-Origin', 'http://localhost');
+  res.set('Access-Control-Allow-Credentials', true);
+  res.set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
+  res.set('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Authorization');
+  if ('OPTIONS' == req.method) return res.send(200);
+  next();
 });
-
-var loginHelpers = function (req, res, next) {
-
-  req.login = function (user) {
-    req.session.userId = user._id;
-    req.user = user;
-    return user;
-  };
-
-  req.logout = function () {
-    req.session.userId = null;
-    req.user  = null;
-  };
-
-  req.currentUser = function (cb) {
-    var userId = req.session.userId;
-    db.User.
-      findOne({
-        _id: userId
-      }, cb);
-  };
-
-  // careful to have this
-  next(); // real important
-};
-
-app.use(loginHelpers);
-
 
 // ROUTES
 // ==========================================================
 // ==========================================================
-// app.get("/", function (req, res) {
-// 	var currentSession;
-// 	if(req.session.userId) {
-// 		currentSession = req.session.userId;
-// 		console.log("has session");
-// 	} else {
-// 		var rootPath = path.join(public, "build/index.html");
-// 		res.sendFile(rootPath);
-// 		console.log("no session");
-// 	}
-// });
 
 // USER ROUTES
 //============
-
-// Get User html layout 
-// app.get("/signup", function (req, res) {
-// 	var signupPath = path.join(views, "signup.html");
-// 	res.sendFile(signupPath);
-// });
 
 // Create User
 app.post("/users", function (req, res) {
@@ -104,26 +52,25 @@ app.post("/users", function (req, res) {
 		});
 });
 
-// Get Login html layout
-// app.get("/login", function (req, res) {
-// 	var loginPath = path.join(views, "login.html");
-// 	res.sendFile(loginPath);
-// });
-
 // Log In User 
 app.post("/login", function (req, res) {
-	var jsonData = JSON.parse(req.body.jsonStr);
-	var email = jsonData.email;
-	var password = jsonData.password;
+  var email    = (req.body.email);
+  var password = (req.body.password);
 
 	db.User
 		.authenticate(email, password,
 		function (err, user) {
-			req.login(user);
+      if (user) {
+        console.log("success");
+        return res.send(user);
+      }
+      console.log("error");
+      return res.send(err);
+			// req.login(user);
 			// to prevent exposing hashed password, we're only sending necessary info
-			var userData = {"_id": user._id, "email": user.email, "name": {"first": user.name.first, "last": user.name.last}};
-			console.log(userData);
-			res.send(userData);
+			// var userData = {"_id": user._id, "email": user.email, "name": {"first": user.name.first, "last": user.name.last}};
+			// console.log(userData);
+			// res.send(userData);
 		});
 });
 
@@ -135,7 +82,7 @@ app.post("/logout", function (req, res) {
 
 // Get User Profile
 app.get("/profile", function (req, res) {
-	console.log("PROFILE")
+	console.log("PROFILE");
 
 	req.currentUser(function (err, user) {
 	  if (user) {
@@ -179,12 +126,6 @@ app.post("/clients", function (req, res) {
 
 // JOB ROUTES
 // ==========
-
-// // Get Jobs html layout
-// app.get("/jobs", function (req, res) {
-// 	var jobsPath = path.join(views, "jobs.html");
-// 	res.sendFile(jobsPath);
-// });
 
 // Get Jobs
 app.get("/clients/:id/jobs", function (req, res) {
