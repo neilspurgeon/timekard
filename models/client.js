@@ -41,10 +41,9 @@ clientSchema.statics.stopTime = function (jobId, clientId, cb) {
 
 	var stopTime = function (jobId, clientId, callback){
 		that.findOne(
-		{ _id: clientId, "jobs._id": jobId },
-		{ "jobs.$.start": 1 },
+			{ _id: clientId, "jobs._id": jobId },
+			{ "jobs.$.start": 1 },
 		function(err, result){
-			
 			var start = result.jobs[0].start.getTime();
 			var now = new Date().getTime();
 			timeDiff = (now - start);

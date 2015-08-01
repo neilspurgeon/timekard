@@ -25,8 +25,10 @@ app.controller('MainCtrl', ['$scope', '$http', '$state',
       console.log(clientId);
       $http.put('/api/' + clientId + '/jobs/' + job._id + '/stop')
       .then(function(result) {
-        console.log(result);
-        job.clockOn = false;
+        // set attributes to returned objects to maintain state
+        var updatedJob = result.data.jobs[0];
+        job.clockOn = updatedJob.clockOn;
+        job.totalTime = updatedJob.totalTime;
       });
     };
 

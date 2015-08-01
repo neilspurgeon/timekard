@@ -165,6 +165,7 @@ app.put("/api/:clientId/jobs/:id/start", function (req, res) {
 	db.Client.startTime(jobId, clientId,
 		function (err, job) {
 			if (!err) {
+        console.log(err, job);
         return res.send(200);
       }
       return res.send(err);
@@ -179,9 +180,17 @@ app.put("/api/:clientId/jobs/:id/stop", function (req, res) {
 	db.Client.stopTime(jobId, clientId,
 		function (err, job) {
 			if (!err) {
-        return res.send(200);
+
+        // find and send updated job
+        db.Client.findOne(
+          {_id: clientId, "jobs._id": jobId,}, 
+          { "jobs.$": 1 },
+        function(err, job) {
+          return res.send(job);
+        });
+      } else {
+        return res.send(err);
       }
-      return res.send(err);
 	});
 });
 
