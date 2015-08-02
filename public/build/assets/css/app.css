@@ -6400,18 +6400,31 @@ blockquote p {
   float: none; }
 
 #timekard-logo {
-  width: 7rem; }
+  height: 1.5rem; }
+
+.title-bar {
+  height: 3rem;
+  padding: 0 1rem; }
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: #eceef1; }
 
 .client-list {
   margin: 0;
   width: 100%;
-  height: 100%;
   overflow-x: scroll;
+  overflow-y: hidden;
   white-space: nowrap; }
 
 .client-list-item {
-  width: 25em;
-  height: auto;
   margin-right: 1em;
   display: inline-block;
-  vertical-align: top; }
+  vertical-align: top;
+  overflow-y: scroll;
+  max-height: 500px;
+  max-height: calc(100vh - 3rem - 3em);
+  width: 25em;
+  background-color: #FFFFFF; }

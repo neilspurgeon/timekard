@@ -1,6 +1,6 @@
 <button ng-click="addClient()">Add Client</button><br>
 <div class="client-list">
-  <div ng-repeat="client in clients" class="client-list-item card">
+  <div ng-repeat="client in clients" class="client-list-item">
     <button ng-click="addJob()">Add Job</button><br>
     <button ng-click="deleteClient()">Delete Client</button>
     {{client.name || "name"}}

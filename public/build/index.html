@@ -10,9 +10,12 @@
     <script src="/angular-resource/angular-resource.js"></script>
     <script src="/assets/js/app.js"></script>
   </head>
+  <style>
+    .scroll-section {overflow-x: scroll;}
+  </style>
   <body>
-    <div class="grid-frame vertical">
 
+    <div class="grid-frame vertical">
       <div class="shrink title-bar">
         <span class="left"><a href="/#!/"><img id="timekard-logo" src="/assets/img/timekard-logo.svg" alt="TimeKard" /></a></span>
         <span class="right nav-links">
@@ -27,6 +30,5 @@
 
     </div>
 
-    <div ui-view="navbar">{{ message }}</div>
   </body>
 </html>

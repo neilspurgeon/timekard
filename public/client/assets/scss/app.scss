@@ -5,36 +5,47 @@
 // ––––––––––––––––––––––––––––––––––––––––––––––––
 
 #timekard-logo {
-  width: 7rem;
+  height: 1.5rem;
 }
 
+$title-bar-height: 3rem;
+.title-bar {
+  height: $title-bar-height;
+  padding: 0 1rem;
+}
 
-// Nav
-// ––––––––––––––––––––––––––––––––––––––––––––––––
-
-// The friendly panel is an all-purpose container for hiding content off-screen.
-
-// Features:
-//  - Position at top, right, bottom, or left
-//  - Anchor to grid block or window
-//  - Define max width or height
-//  - Transform into grid block depending on screen size
-
+// .grid-content {
+//   height: calc(100vh - #{$title-bar-height});
+// }
 
 // Cards
 // ––––––––––––––––––––––––––––––––––––––––––––––––
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: #eceef1;
+}
 .client-list{
   margin: 0;
   width: 100%;
-  height: 100%;
   overflow-x: scroll;
+  overflow-y: hidden;
   white-space : nowrap;
 }
 
 .client-list-item {
-  width: 25em;
-  height: auto;
   margin-right: 1em;
   display: inline-block;
   vertical-align: top;
+  overflow-y: scroll;
+  max-height: 500px;
+  max-height: calc(100vh - #{$title-bar-height} - 3em);
+  width: 25em;
+  background-color: #FFFFFF;
+}
+
+.card {
+
 }
