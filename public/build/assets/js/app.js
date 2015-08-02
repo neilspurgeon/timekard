@@ -58,59 +58,6 @@ var app = angular.module('application');
 app.config(function ($httpProvider) {
     $httpProvider.interceptors.push('TokenInterceptor');
 });
-app.factory('AuthService', function() {
-  var auth = {
-    isLogged: false
-  };
-  return auth;
-});
-app.factory('Client', function($resource) {
-  return $resource('/api/clients');
-});
-
-app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {
-    return {
-        request: function (config) {
-            config.headers = config.headers || {};
-            if ($window.sessionStorage.token) {
-                config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
-            }
-            return config;
-        },
- 
-        requestError: function(rejection) {
-            return $q.reject(rejection);
-        },
- 
-        /* Set Auth.isAuthenticated to true if 200 received */
-        response: function (response) {
-            if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthService.isAuthenticated) {
-                AuthService.isAuthenticated = true;
-            }
-            return response || $q.when(response);
-        },
- 
-        /* Revoke client auth if 401 is received */
-        responseError: function(rejection) {
-            if (rejection != null && rejection.status === 401 && ($window.sessionStorage.token || AuthService.isAuthenticated)) {
-                delete $window.sessionStorage.token;
-                AuthService.isAuthenticated = false;
-                $location.path("/admin/login");
-            }
- 
-            return $q.reject(rejection);
-        }
-    };
-});
-app.factory('UserService', function($http) {
-  return {
-    logIn: function(email, password) {
-        return $http.post('/login', {email: email, password: password});
-    },
-    logOut: function() {
-    }
-  };
-});
 app.controller('EntriesCtrl', ['$scope', 'Client', 
   function($scope, Client) {
     $scope.entries = Client.query();
@@ -130,7 +77,7 @@ app.controller('MainCtrl', ['$scope', '$http',
       var job = this.job;
       var clientId = this.$parent.client._id;
       console.log(clientId);
-      $http.put('/api/' + clientId + '/jobs/' + job._id + '/start')
+      $http.put('/api/clients/' + clientId + '/jobs/' + job._id + '/start')
       .then(function(result) {
         console.log(result);
         job.clockOn = true;
@@ -141,7 +88,7 @@ app.controller('MainCtrl', ['$scope', '$http',
       var job = this.job;
       var clientId = this.$parent.client._id;
 
-      $http.put('/api/' + clientId + '/jobs/' + job._id + '/stop')
+      $http.put('/api/clients/' + clientId + '/jobs/' + job._id + '/stop')
       .then(function(result) {
         // set attributes to returned objects to maintain state
         var updatedJob = result.data.jobs[0];
@@ -164,6 +111,20 @@ app.controller('MainCtrl', ['$scope', '$http',
         $scope.clients[clientIndex] = updatedClient;
       });
 
+    };
+
+    $scope.deleteJob = function() {
+      var job = this.job;
+      var clientsArr = $scope.clients;
+      var clientId = this.$parent.client._id;
+      var clientIndex = getIndex(clientsArr, clientId);
+      var jobIndex = getIndex(clientsArr[clientIndex].jobs, job._id);
+
+      $http.delete('/api/clients/' + clientId + '/jobs/' + job._id + '/delete')
+      .then(function(result) {
+        // remove job from scope
+        $scope.clients[clientIndex].jobs.splice(jobIndex, 1);
+      });
     };
 
     var getIndex = function(arr, id) {
@@ -226,3 +187,57 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state',
 }]);
 
 
+
+app.factory('AuthService', function() {
+  var auth = {
+    isLogged: false
+  };
+  return auth;
+});
+app.factory('Client', function($resource) {
+  return $resource('/api/clients');
+});
+
+app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {
+    return {
+        request: function (config) {
+            config.headers = config.headers || {};
+            if ($window.sessionStorage.token) {
+                config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
+            }
+            return config;
+        },
+ 
+        requestError: function(rejection) {
+            return $q.reject(rejection);
+        },
+ 
+        /* Set Auth.isAuthenticated to true if 200 received */
+        response: function (response) {
+            if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthService.isAuthenticated) {
+                AuthService.isAuthenticated = true;
+            }
+            return response || $q.when(response);
+        },
+ 
+        /* Revoke client auth if 401 is received */
+        responseError: function(rejection) {
+            if (rejection != null && rejection.status === 401 && ($window.sessionStorage.token || AuthService.isAuthenticated)) {
+                delete $window.sessionStorage.token;
+                AuthService.isAuthenticated = false;
+                $location.path("/admin/login");
+            }
+ 
+            return $q.reject(rejection);
+        }
+    };
+});
+app.factory('UserService', function($http) {
+  return {
+    logIn: function(email, password) {
+        return $http.post('/login', {email: email, password: password});
+    },
+    logOut: function() {
+    }
+  };
+});

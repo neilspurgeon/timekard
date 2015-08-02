@@ -12,7 +12,7 @@ app.controller('MainCtrl', ['$scope', '$http',
       var job = this.job;
       var clientId = this.$parent.client._id;
       console.log(clientId);
-      $http.put('/api/' + clientId + '/jobs/' + job._id + '/start')
+      $http.put('/api/clients/' + clientId + '/jobs/' + job._id + '/start')
       .then(function(result) {
         console.log(result);
         job.clockOn = true;
@@ -23,7 +23,7 @@ app.controller('MainCtrl', ['$scope', '$http',
       var job = this.job;
       var clientId = this.$parent.client._id;
 
-      $http.put('/api/' + clientId + '/jobs/' + job._id + '/stop')
+      $http.put('/api/clients/' + clientId + '/jobs/' + job._id + '/stop')
       .then(function(result) {
         // set attributes to returned objects to maintain state
         var updatedJob = result.data.jobs[0];
@@ -46,6 +46,20 @@ app.controller('MainCtrl', ['$scope', '$http',
         $scope.clients[clientIndex] = updatedClient;
       });
 
+    };
+
+    $scope.deleteJob = function() {
+      var job = this.job;
+      var clientsArr = $scope.clients;
+      var clientId = this.$parent.client._id;
+      var clientIndex = getIndex(clientsArr, clientId);
+      var jobIndex = getIndex(clientsArr[clientIndex].jobs, job._id);
+
+      $http.delete('/api/clients/' + clientId + '/jobs/' + job._id + '/delete')
+      .then(function(result) {
+        // remove job from scope
+        $scope.clients[clientIndex].jobs.splice(jobIndex, 1);
+      });
     };
 
     var getIndex = function(arr, id) {
