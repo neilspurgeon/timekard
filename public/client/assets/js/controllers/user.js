@@ -42,7 +42,7 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state',
     AuthService.isLogged = false;
     delete $window.sessionStorage.token;
     $rootScope.authenticated = false;
-    $location.path("/");
+    $state.go('login');
   };
 
 }]);
