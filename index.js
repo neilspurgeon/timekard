@@ -121,6 +121,19 @@ app.post("/api/clients", function (req, res) {
 	});
 });
 
+app.delete("/api/clients/:clientId/delete", function (req, res) {
+  var clientId = req.params.clientId;
+  console.log("DELETING");
+  db.Client.remove({_id: clientId},
+    function (err, success) {
+      if (success) {
+        res.status(200).send(success);
+      } else {
+        res.status(400).send(err);;
+      }
+    });
+});
+
 // JOB ROUTES
 // ==========
 

@@ -2,6 +2,7 @@
 <ul>
   <li ng-repeat="client in clients">
     <button ng-click="addJob()">Add Job</button><br>
+    <button ng-click="deleteClient()">Delete Client</button>
     {{client.name || "name"}}
     <ul>
       <li ng-repeat="job in client.jobs">
@@ -10,7 +11,7 @@
         {{job.clockOn}}
         <button ng-click="startJob()" ng-hide="job.clockOn">Start</button>
         <button ng-click="stopJob()" ng-show="job.clockOn">Stop</button>
-        <button ng-click="deleteJob()">Delete</button>
+        <button ng-click="deleteJob()">Delete Job</button>
       </li>
     </ul>
   </li>

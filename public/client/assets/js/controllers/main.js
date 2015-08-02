@@ -70,6 +70,17 @@ app.controller('MainCtrl', ['$scope', '$http',
       });
     };
 
+    $scope.deleteClient = function() {
+      var clientId = this.client._id;
+      var clientsArr = $scope.clients;
+      var clientIndex = getIndex(clientsArr, clientId);
+
+      $http.delete('/api/clients/' + clientId + '/delete')
+      .then(function(result){
+        $scope.clients.splice(clientIndex, 1);
+      });
+    };
+
     var getIndex = function(arr, id) {
       for (var i=0; i<arr.length; i++) {
         if (arr[i]._id === id) {
