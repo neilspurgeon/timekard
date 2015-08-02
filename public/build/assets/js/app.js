@@ -127,6 +127,14 @@ app.controller('MainCtrl', ['$scope', '$http',
       });
     };
 
+    $scope.addClient = function() {
+      $http.post('/api/clients', {name: "someclientName"})
+      .then(function(result){
+        var newClient = result.data;
+        $scope.clients.push(newClient);
+      });
+    };
+
     var getIndex = function(arr, id) {
       for (var i=0; i<arr.length; i++) {
         if (arr[i]._id === id) {

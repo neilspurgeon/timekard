@@ -110,10 +110,10 @@ app.get("/api/clients", function (req, res) {
 // Create Clients
 app.post("/api/clients", function (req, res) {
 	var clientName = req.body.name;
-	var user = req.session.userId;
+	var user = req.user;
 
 	db.Client.create({
-		userId: user,
+		userId: user._id,
 		name: clientName
 	}, function (err, client) {
 		console.log("something " + client);
