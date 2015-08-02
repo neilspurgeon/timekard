@@ -6404,7 +6404,39 @@ blockquote p {
 
 .title-bar {
   height: 3rem;
-  padding: 0 1rem; }
+  padding: 0 1rem;
+  background-color: #FFF; }
+
+.grid-content {
+  margin-top: 1rem; }
+
+button {
+  margin: 1px;
+  border: none;
+  padding: .6rem 0;
+  width: 7rem;
+  font-size: .9rem;
+  font-weight: 500;
+  text-transform: uppercase; }
+
+button.raised {
+  background-color: #2962FF;
+  color: #FFF;
+  border-radius: 2px; }
+
+button.flat {
+  background-color: transparent;
+  color: #2962FF; }
+
+.modal-container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  width: 100%;
+  height: 100vh;
+  padding: 0;
+  margin: 0; }
 
 html, body {
   height: 100%;
@@ -6424,7 +6456,23 @@ html, body {
   display: inline-block;
   vertical-align: top;
   overflow-y: scroll;
-  max-height: 500px;
   max-height: calc(100vh - 3rem - 3em);
-  width: 25em;
-  background-color: #FFFFFF; }
+  min-width: 25em;
+  background-color: #FFFFFF;
+  box-shadow: -1px 1px 5px 1px rgba(0, 0, 0, 0.1); }
+
+.client-list-item ul {
+  margin: 0; }
+
+.client-list-item li {
+  list-style: none; }
+
+.client-name-container {
+  background-color: #4DB6AC;
+  width: 100%;
+  padding: 1rem 2rem; }
+  .client-name-container h1, .client-name-container h2, .client-name-container h3, .client-name-container h4, .client-name-container h5, .client-name-container h6, .client-name-container p {
+    color: #FFF; }
+
+.client-jobs-container {
+  padding: 2rem; }

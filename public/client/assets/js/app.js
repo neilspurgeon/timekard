@@ -24,6 +24,11 @@
         templateUrl: 'templates/main.html',
         controller: 'MainCtrl'
       })
+      .state('main.addClient', {
+        url: 'addClient',
+        templateUrl: 'templates/main.addClientModal.html',
+        controller: 'MainCtrl'
+      })
       .state('createAccount', {
         url: '/createAccount',
         templateUrl: 'templates/createAccount.html',

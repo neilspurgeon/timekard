@@ -24,6 +24,11 @@
         templateUrl: 'templates/main.html',
         controller: 'MainCtrl'
       })
+      .state('main.addClient', {
+        url: 'addClient',
+        templateUrl: 'templates/main.addClientModal.html',
+        controller: 'MainCtrl'
+      })
       .state('createAccount', {
         url: '/createAccount',
         templateUrl: 'templates/createAccount.html',
@@ -63,15 +68,10 @@ app.controller('EntriesCtrl', ['$scope', 'Client',
     $scope.entries = Client.query();
   }
 ]);
-app.controller('MainCtrl', ['$scope', '$http', 
-  function($scope, $http) {
+app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource', 
+  function($scope, $http, $state, ClientResource) {
     
-    $scope.clients = [];
-
-    $http.get('/api/clients')
-    .then(function(result) {
-      $scope.clients = result.data;
-    });
+    $scope.clients = $scope.clients || ClientResource.query();
 
     $scope.startJob = function() {
       var job = this.job;
@@ -127,11 +127,11 @@ app.controller('MainCtrl', ['$scope', '$http',
       });
     };
 
-    $scope.addClient = function() {
-      $http.post('/api/clients', {name: "someclientName"})
-      .then(function(result){
-        var newClient = result.data;
-        $scope.clients.push(newClient);
+    $scope.addClient = function(name) {
+      ClientResource.save({name: name})
+      .$promise.then(function(client) {
+        $scope.clients.push(client); 
+        $state.go('main');
       });
     };
 
@@ -213,8 +213,8 @@ app.factory('AuthService', function() {
   };
   return auth;
 });
-app.factory('Client', function($resource) {
-  return $resource('/api/clients');
+app.factory('ClientResource', function($resource) {
+  return $resource('/api/clients/:id');
 });
 
 app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {

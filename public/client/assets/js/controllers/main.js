@@ -1,12 +1,7 @@
-app.controller('MainCtrl', ['$scope', '$http', 
-  function($scope, $http) {
+app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource', 
+  function($scope, $http, $state, ClientResource) {
     
-    $scope.clients = [];
-
-    $http.get('/api/clients')
-    .then(function(result) {
-      $scope.clients = result.data;
-    });
+    $scope.clients = $scope.clients || ClientResource.query();
 
     $scope.startJob = function() {
       var job = this.job;
@@ -62,11 +57,11 @@ app.controller('MainCtrl', ['$scope', '$http',
       });
     };
 
-    $scope.addClient = function() {
-      $http.post('/api/clients', {name: "someclientName"})
-      .then(function(result){
-        var newClient = result.data;
-        $scope.clients.push(newClient);
+    $scope.addClient = function(name) {
+      ClientResource.save({name: name})
+      .$promise.then(function(client) {
+        $scope.clients.push(client); 
+        $state.go('main');
       });
     };
 

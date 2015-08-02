@@ -1,18 +1,24 @@
-<button ng-click="addClient()">Add Client</button><br>
+<div ui-view></div>
+
 <div class="client-list">
+<button ng-click="addClient()" class="raised">Add Client</button>
   <div ng-repeat="client in clients" class="client-list-item">
-    <button ng-click="addJob()">Add Job</button><br>
-    <button ng-click="deleteClient()">Delete Client</button>
-    {{client.name || "name"}}
-    <ul>
-      <li ng-repeat="job in client.jobs">
-        {{job.name}}
-        {{job.totalTime}}
-        {{job.clockOn}}
-        <button ng-click="startJob()" ng-hide="job.clockOn">Start</button>
-        <button ng-click="stopJob()" ng-show="job.clockOn">Stop</button>
-        <button ng-click="deleteJob()">Delete Job</button>
-      </li>
-    </ul>
+    <div class="client-name-container">
+      <h3>{{client.name || "name"}}</h3>
+    </div>
+    <div class="client-jobs-container">
+      <button ng-click="addJob()" class="flat">Add Job</button><br>
+      <button ng-click="deleteClient()" class="flat">Delete Client</button>
+      <ul>
+        <li ng-repeat="job in client.jobs">
+          {{job.name}}
+          {{job.totalTime}}
+          {{job.clockOn}}
+          <button ng-click="startJob()" ng-hide="job.clockOn" class="flat">Start</button>
+          <button ng-click="stopJob()" ng-show="job.clockOn" class="flat">Stop</button>
+          <button ng-click="deleteJob()" class="flat">Delete Job</button>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>

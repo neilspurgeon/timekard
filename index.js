@@ -111,6 +111,7 @@ app.get("/api/clients", function (req, res) {
 app.post("/api/clients", function (req, res) {
 	var clientName = req.body.name;
 	var user = req.user;
+  console.log(req.body);
 
 	db.Client.create({
 		userId: user._id,
