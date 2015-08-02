@@ -1,5 +1,5 @@
-app.controller('MainCtrl', ['$scope', '$http', '$state', 
-  function($scope, $http, $state) {
+app.controller('MainCtrl', ['$scope', '$http', 
+  function($scope, $http) {
     
     $scope.clients = [];
 

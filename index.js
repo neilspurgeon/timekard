@@ -67,9 +67,9 @@ app.post("/login", function (req, res) {
 		.authenticate(email, password,
 		function (err, user) {
       if (user) {
+        var userData = {email: user.email, firstName: user.name.first};
         var token = jwt.sign(user, secret.secretToken, { expiresInMinutes: 60 });
-        console.log("success");
-        return res.json({token: token});
+        return res.status(201).json({token: token, user: userData});
       }
       console.log("error");
       return res.send(err);

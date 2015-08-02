@@ -63,8 +63,8 @@ app.controller('EntriesCtrl', ['$scope', 'Client',
     $scope.entries = Client.query();
   }
 ]);
-app.controller('MainCtrl', ['$scope', '$http', '$state', 
-  function($scope, $http, $state) {
+app.controller('MainCtrl', ['$scope', '$http', 
+  function($scope, $http) {
     
     $scope.clients = [];
 
@@ -99,8 +99,11 @@ app.controller('MainCtrl', ['$scope', '$http', '$state',
 
   }
 ]);
-app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', 'UserService', 'AuthenticationService',
-  function($scope, $http, $location, $window, UserService, AuthenticationService) {
+app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state', '$rootScope', 'UserService', 'AuthService',
+  function($scope, $http, $location, $window, $state, $rootScope, UserService, AuthService) {
+  
+  $rootScope.authenticated = AuthService.isLogged || $window.sessionStorage.token;
+  $scope.message = {};
 
   $scope.createAccount = function() {
     var jsonData = 'jsonStr='+JSON.stringify($scope.formData);
@@ -110,8 +113,9 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', 'UserServ
       method: 'POST',
       data: jsonData,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    }).success(function(data) {
-      $location.path('/app');
+    })
+    .success(function(data) {
+      $state.go('main');
       $scope.currentUser = data;
       console.log($scope.currentUser);
     }).error(function(err){
@@ -120,37 +124,33 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', 'UserServ
   };
 
   $scope.logIn = function(email, password) {
-    console.log(email, password);
     if (email !== undefined && password !== undefined) {
-      console.log(email + password);
-      UserService.logIn(email, password).success(function(data) {
-        AuthenticationService.isLogged = true;
+      UserService.logIn(email, password)
+      .success(function(data) {
+        AuthService.isLogged = true;
         $window.sessionStorage.token = data.token;
-        $location.path('/app');
-        console.log(data);
-      }).error(function(status, data) {
+        $rootScope.authenticated = true;
+        $state.go('main');
+      })
+      .error(function(status, data) {
         console.log(status);
         console.log(data);
       });
     }
   };
 
-  $scope.logout = function() {
-    $http.post('/logout')
-    .success(function() {
-      $location.path('/');
-      $scope.currentUser = null;
-    })
-    .error(function(err) {
-      console.log(err);
-    });
+  $scope.logOut = function() {
+    AuthService.isLogged = false;
+    delete $window.sessionStorage.token;
+    $rootScope.authenticated = false;
+    $location.path("/");
   };
 
 }]);
 
 
 
-app.factory('AuthenticationService', function() {
+app.factory('AuthService', function() {
   var auth = {
     isLogged: false
   };
@@ -160,7 +160,7 @@ app.factory('Client', function($resource) {
   return $resource('/api/clients');
 });
 
-app.factory('TokenInterceptor', function ($q, $window, $location, AuthenticationService) {
+app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {
     return {
         request: function (config) {
             config.headers = config.headers || {};
@@ -174,19 +174,19 @@ app.factory('TokenInterceptor', function ($q, $window, $location, Authentication
             return $q.reject(rejection);
         },
  
-        /* Set Authentication.isAuthenticated to true if 200 received */
+        /* Set Auth.isAuthenticated to true if 200 received */
         response: function (response) {
-            if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthenticationService.isAuthenticated) {
-                AuthenticationService.isAuthenticated = true;
+            if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthService.isAuthenticated) {
+                AuthService.isAuthenticated = true;
             }
             return response || $q.when(response);
         },
  
-        /* Revoke client authentication if 401 is received */
+        /* Revoke client auth if 401 is received */
         responseError: function(rejection) {
-            if (rejection != null && rejection.status === 401 && ($window.sessionStorage.token || AuthenticationService.isAuthenticated)) {
+            if (rejection != null && rejection.status === 401 && ($window.sessionStorage.token || AuthService.isAuthenticated)) {
                 delete $window.sessionStorage.token;
-                AuthenticationService.isAuthenticated = false;
+                AuthService.isAuthenticated = false;
                 $location.path("/admin/login");
             }
  

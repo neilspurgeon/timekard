@@ -13,21 +13,20 @@
   <body>
     <div class="grid-frame vertical">
 
-      <div class="shrink title-bar" ng-controller="MainCtrl">
+      <div class="shrink title-bar">
         <span class="left"><a href="/#!/"><img id="timekard-logo" src="/assets/img/timekard-logo.svg" alt="TimeKard" /></a></span>
         <span class="right nav-links">
-        {{currentUser}} 
-          <a ui-sref="login">Login</a>
-          <a ui-sref="createAccount">Create Account</a>
-          <a href="" ng-click="logout()" ng-show="currentUser">logout</button>
+          <a ui-sref="login" ng-hide="authenticated">Login</a>
+          <a ui-sref="createAccount" ng-hide="authenticated">Create Account</a>
+          <a href="" ng-controller="UserCtrl" ng-click="logOut()" ng-show="authenticated">Log Out</a>
         </span>
       </div>
       
-      <a ui-sref="main">app</a>
       <div ui-view class="grid-content">
-
       </div>
+
     </div>
 
+    <div ui-view="navbar">{{ message }}</div>
   </body>
 </html>

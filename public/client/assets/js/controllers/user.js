@@ -1,5 +1,8 @@
-app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', 'UserService', 'AuthenticationService',
-  function($scope, $http, $location, $window, UserService, AuthenticationService) {
+app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state', '$rootScope', 'UserService', 'AuthService',
+  function($scope, $http, $location, $window, $state, $rootScope, UserService, AuthService) {
+  
+  $rootScope.authenticated = AuthService.isLogged || $window.sessionStorage.token;
+  $scope.message = {};
 
   $scope.createAccount = function() {
     var jsonData = 'jsonStr='+JSON.stringify($scope.formData);
@@ -9,8 +12,9 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', 'UserServ
       method: 'POST',
       data: jsonData,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    }).success(function(data) {
-      $location.path('/app');
+    })
+    .success(function(data) {
+      $state.go('main');
       $scope.currentUser = data;
       console.log($scope.currentUser);
     }).error(function(err){
@@ -19,30 +23,26 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', 'UserServ
   };
 
   $scope.logIn = function(email, password) {
-    console.log(email, password);
     if (email !== undefined && password !== undefined) {
-      console.log(email + password);
-      UserService.logIn(email, password).success(function(data) {
-        AuthenticationService.isLogged = true;
+      UserService.logIn(email, password)
+      .success(function(data) {
+        AuthService.isLogged = true;
         $window.sessionStorage.token = data.token;
-        $location.path('/app');
-        console.log(data);
-      }).error(function(status, data) {
+        $rootScope.authenticated = true;
+        $state.go('main');
+      })
+      .error(function(status, data) {
         console.log(status);
         console.log(data);
       });
     }
   };
 
-  $scope.logout = function() {
-    $http.post('/logout')
-    .success(function() {
-      $location.path('/');
-      $scope.currentUser = null;
-    })
-    .error(function(err) {
-      console.log(err);
-    });
+  $scope.logOut = function() {
+    AuthService.isLogged = false;
+    delete $window.sessionStorage.token;
+    $rootScope.authenticated = false;
+    $location.path("/");
   };
 
 }]);

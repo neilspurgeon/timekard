@@ -1,4 +1,4 @@
-app.factory('AuthenticationService', function() {
+app.factory('AuthService', function() {
   var auth = {
     isLogged: false
   };
