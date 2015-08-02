@@ -1,5 +1,6 @@
 <ul>
   <li ng-repeat="client in clients">
+    <button ng-click="addJob()">Add Job</button><br>
     {{client.name || "name"}}
     <ul>
       <li ng-repeat="job in client.jobs">

@@ -136,13 +136,20 @@ app.get("/api/clients/:id/jobs", function (req, res) {
 // Create Job
 app.post("/api/clients/:id/jobs", function (req, res) {
 	var clientId = req.params.id;
-	var jobName = req.body.name;
+	var jobName = req.body.jobName;
 	
 	db.Client.update(
 		{_id: clientId},
 		{$push: {jobs: {name: jobName}}},
 		function (err, success) {
-			res.send(201);
+      if (!err) {
+        return db.Client.find({
+          _id: clientId
+        }, function (err, jobs) {
+            res.status(201).send(jobs);
+        });
+      }
+      return res.send(err);
 		});
 });
 
@@ -154,7 +161,7 @@ app.delete("/api/jobs/:id/delete", function (req, res) {
 	db.Client.deleteJob(jobId, clientId,
 		function (err, job) {
 			res.send(201);
-	});
+	});  
 });
 
 // Start Timing Job
