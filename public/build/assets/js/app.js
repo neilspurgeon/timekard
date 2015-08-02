@@ -58,59 +58,6 @@ var app = angular.module('application');
 app.config(function ($httpProvider) {
     $httpProvider.interceptors.push('TokenInterceptor');
 });
-app.factory('AuthService', function() {
-  var auth = {
-    isLogged: false
-  };
-  return auth;
-});
-app.factory('Client', function($resource) {
-  return $resource('/api/clients');
-});
-
-app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {
-    return {
-        request: function (config) {
-            config.headers = config.headers || {};
-            if ($window.sessionStorage.token) {
-                config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
-            }
-            return config;
-        },
- 
-        requestError: function(rejection) {
-            return $q.reject(rejection);
-        },
- 
-        /* Set Auth.isAuthenticated to true if 200 received */
-        response: function (response) {
-            if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthService.isAuthenticated) {
-                AuthService.isAuthenticated = true;
-            }
-            return response || $q.when(response);
-        },
- 
-        /* Revoke client auth if 401 is received */
-        responseError: function(rejection) {
-            if (rejection != null && rejection.status === 401 && ($window.sessionStorage.token || AuthService.isAuthenticated)) {
-                delete $window.sessionStorage.token;
-                AuthService.isAuthenticated = false;
-                $location.path("/admin/login");
-            }
- 
-            return $q.reject(rejection);
-        }
-    };
-});
-app.factory('UserService', function($http) {
-  return {
-    logIn: function(email, password) {
-        return $http.post('/login', {email: email, password: password});
-    },
-    logOut: function() {
-    }
-  };
-});
 app.controller('EntriesCtrl', ['$scope', 'Client', 
   function($scope, Client) {
     $scope.entries = Client.query();
@@ -259,3 +206,57 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state',
 }]);
 
 
+
+app.factory('AuthService', function() {
+  var auth = {
+    isLogged: false
+  };
+  return auth;
+});
+app.factory('Client', function($resource) {
+  return $resource('/api/clients');
+});
+
+app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {
+    return {
+        request: function (config) {
+            config.headers = config.headers || {};
+            if ($window.sessionStorage.token) {
+                config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
+            }
+            return config;
+        },
+ 
+        requestError: function(rejection) {
+            return $q.reject(rejection);
+        },
+ 
+        /* Set Auth.isAuthenticated to true if 200 received */
+        response: function (response) {
+            if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthService.isAuthenticated) {
+                AuthService.isAuthenticated = true;
+            }
+            return response || $q.when(response);
+        },
+ 
+        /* Revoke client auth if 401 is received */
+        responseError: function(rejection) {
+            if (rejection != null && rejection.status === 401 && ($window.sessionStorage.token || AuthService.isAuthenticated)) {
+                delete $window.sessionStorage.token;
+                AuthService.isAuthenticated = false;
+                $location.path("/admin/login");
+            }
+ 
+            return $q.reject(rejection);
+        }
+    };
+});
+app.factory('UserService', function($http) {
+  return {
+    logIn: function(email, password) {
+        return $http.post('/login', {email: email, password: password});
+    },
+    logOut: function() {
+    }
+  };
+});
