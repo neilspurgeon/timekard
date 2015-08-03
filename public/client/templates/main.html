@@ -3,8 +3,8 @@
 <div class="client-list">
   <div ng-repeat="client in clients" class="client-list-item card-item">
     <div class="client-name-container">
-      <h3>{{client.name || "name"}}</h3>
-      {{ client.jobs | sumTotalFilter:'totalTime' | msToTimeFilter}}
+      <h3 class="client-name">{{client.name || "name"}}</h3>
+      <h4 class="client-total">{{ client.jobs | sumTotalFilter:'totalTime' | msToTimeFilter}}</h4>
     </div>
     <div class="client-jobs-container">
       <button ng-click="addJob()" class="flat">Add Job</button><br>
@@ -13,7 +13,7 @@
         <li ng-repeat="job in client.jobs">
           {{job.name}}
           {{job.totalTime | msToTimeFilter}}
-          {{job.clockOn}}
+          <!-- {{job.clockOn}} -->
           <button ng-click="startJob()" ng-hide="job.clockOn" class="flat">Start</button>
           <button ng-click="stopJob()" ng-show="job.clockOn" class="flat">Stop</button>
           <button ng-click="deleteJob()" class="flat">Delete Job</button>

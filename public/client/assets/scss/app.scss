@@ -92,7 +92,7 @@ button.flat {
   vertical-align: top;
   overflow-y: scroll;
   max-height: calc(100vh - #{$title-bar-height} - 3em);
-  min-width: 25em;
+  width: 30em;
 }
 
 
@@ -108,9 +108,27 @@ button.flat {
   background-color: #4DB6AC;
   width: 100%;
   padding: 1rem 2rem;
+  display: inline-flex;
   h1, h2, h3, h4, h5, h6, p {
     color: #FFF;
   }
+}
+
+h3.client-name, h4.client-total {
+  width: 50%;
+}
+
+h3.client-name {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+h4.client-total {
+  font-size: $h3-font-size; 
+  font-weight: $font-weight-light;
+  color: #FFF;
+  text-align: right;
 }
 
 .client-jobs-container {
