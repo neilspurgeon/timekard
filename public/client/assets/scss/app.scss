@@ -72,10 +72,9 @@ button.flat {
     box-shadow: -1px 1px 5px 1px rgba(0, 0, 0, 0.1);
     margin-bottom: 0.5rem;
     color: #000;
-    border-radius: 2px;
-    overflow: hidden;
     height: 100%;
     padding-bottom: 1em;
+    // border-radius: 2px; //This is causing a bug in Chrome with scrolling.
 }
 
 .client-list{
