@@ -1,7 +1,6 @@
 <div ui-view></div>
 
 <div class="client-list">
-<button ng-click="addClient()" class="raised">Add Client</button>
   <div ng-repeat="client in clients" class="client-list-item">
     <div class="client-name-container">
       <h3>{{client.name || "name"}}</h3>

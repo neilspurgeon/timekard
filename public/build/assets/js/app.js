@@ -52,8 +52,9 @@
 
   }
 
-  function run() {
+  function run($state,$rootScope) {
     FastClick.attach(document.body);
+    $rootScope.$state = $state;
   }
 
 })();
@@ -126,7 +127,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
         $scope.clients[clientIndex].jobs.splice(jobIndex, 1);
       });
     };
-
+    
     $scope.addClient = function(name) {
       ClientResource.save({name: name})
       .$promise.then(function(client) {

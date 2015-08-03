@@ -6410,6 +6410,12 @@ blockquote p {
 .grid-content {
   margin-top: 1rem; }
 
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: #eceef1; }
+
 button {
   margin: 1px;
   border: none;
@@ -6431,21 +6437,16 @@ button.flat {
 .modal-container {
   position: fixed;
   left: 0;
-  top: 0;
-  background-color: rgba(255, 255, 255, 0.9);
+  bottom: 0;
+  background-color: #eceef1;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 3rem);
   padding: 0;
   margin: 0; }
 
-html, body {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  background-color: #eceef1; }
-
 .client-list {
   margin: 0;
+  padding-bottom: 1em;
   width: 100%;
   overflow-x: scroll;
   overflow-y: hidden;

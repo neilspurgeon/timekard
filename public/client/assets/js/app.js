@@ -52,8 +52,9 @@
 
   }
 
-  function run() {
+  function run($state,$rootScope) {
     FastClick.attach(document.body);
+    $rootScope.$state = $state;
   }
 
 })();
