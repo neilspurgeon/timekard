@@ -73,6 +73,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
   function($scope, $http, $state, ClientResource) {
     
     $scope.clients = $scope.clients || ClientResource.query();
+    console.log($scope.clients);
 
     $scope.startJob = function() {
       var job = this.job;

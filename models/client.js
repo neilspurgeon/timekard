@@ -92,13 +92,10 @@ var getTotalTime = function (jobId, clientId, user, callback) {
 				}
 			}
 
-			// convert sum to human time
-			var humanTime = sum.toHHMMSS();
-
 			// update totalTime
 			user.update(
 				{ _id: clientId, "jobs._id": jobId },
-				{ "jobs.$.totalTime": humanTime }, 
+				{ "jobs.$.totalTime": sum }, 
 			callback);
 		}
 	);
@@ -112,20 +109,6 @@ clientSchema.statics.startTime = function (jobId, clientId, cb) {
 		{ _id: clientId, "jobs._id": jobId },
 		{ $set: {"jobs.$.start": date, "jobs.$.clockOn": true } },
 	cb);	
-};
-
-// Convert timestamp (milliseconds) to human time
-Number.prototype.toHHMMSS = function () {
-    var secNum = Math.floor(parseInt(this, 10) / 1000);
-    var hours   = Math.floor(secNum / 3600);
-    var minutes = Math.floor((secNum - (hours * 3600)) / 60);
-    var seconds = secNum - (hours * 3600) - (minutes * 60);
-
-    if (hours   < 10) {hours   = "0" + hours;}
-    if (minutes < 10) {minutes = "0" + minutes;}
-    if (seconds < 10) {seconds = "0" + seconds;}
-    var time    = hours + ':' + minutes + ':' + seconds;
-    return time;
 };
 
 // Export model
