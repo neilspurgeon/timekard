@@ -6500,3 +6500,13 @@ h4.client-total {
 
 .client-jobs-container {
   padding: 2rem; }
+
+li.job {
+  border-bottom: 1px solid #000; }
+
+.add-job-bttn {
+  width: 100%;
+  text-align: left;
+  margin-left: -38em;
+  margin: 0;
+  padding-left: 2rem; }
