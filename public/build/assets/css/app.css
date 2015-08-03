@@ -6407,14 +6407,14 @@ blockquote p {
   padding: 0 1rem;
   background-color: #FFF; }
 
-.grid-content {
-  margin-top: 1rem; }
-
 html, body {
   height: 100%;
   width: 100%;
   overflow: hidden;
   background-color: #eceef1; }
+
+.main-content {
+  margin-top: 1em; }
 
 button {
   margin: 1px;
@@ -6444,6 +6444,16 @@ button.flat {
   padding: 0;
   margin: 0; }
 
+.card-item {
+  background: #FFFFFF;
+  box-shadow: -1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.5rem;
+  color: #000;
+  border-radius: 2px;
+  overflow: hidden;
+  height: 100%;
+  padding-bottom: 1em; }
+
 .client-list {
   margin: 0;
   padding-bottom: 1em;
@@ -6458,9 +6468,7 @@ button.flat {
   vertical-align: top;
   overflow-y: scroll;
   max-height: calc(100vh - 3rem - 3em);
-  min-width: 25em;
-  background-color: #FFFFFF;
-  box-shadow: -1px 1px 5px 1px rgba(0, 0, 0, 0.1); }
+  min-width: 25em; }
 
 .client-list-item ul {
   margin: 0; }

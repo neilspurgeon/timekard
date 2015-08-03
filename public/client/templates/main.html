@@ -1,7 +1,7 @@
 <div ui-view></div>
-
+<div class="grid-content">
 <div class="client-list">
-  <div ng-repeat="client in clients" class="client-list-item">
+  <div ng-repeat="client in clients" class="client-list-item card-item">
     <div class="client-name-container">
       <h3>{{client.name || "name"}}</h3>
     </div>
@@ -20,4 +20,5 @@
       </ul>
     </div>
   </div>
+</div>
 </div>
