@@ -24,7 +24,7 @@
         templateUrl: 'templates/main.html',
         controller: 'MainCtrl'
       })
-      .state('main.addClient', {
+      .state('addClient', {
         url: 'addClient',
         templateUrl: 'templates/main.addClientModal.html',
         controller: 'MainCtrl'
