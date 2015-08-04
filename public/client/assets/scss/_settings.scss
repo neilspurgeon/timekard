@@ -110,6 +110,7 @@ $warning-color: #F44336;
 $dark-color: #232323;
 $white: #FFFFFF;
 $gray: #E0E0E0;
+$gray-medium: #9E9E9E;
 $gray-dark: #616161;
 $gray-light: #FAFAFA;
 
@@ -200,8 +201,8 @@ $h6-font-size: 1rem;
 // We use these to style anchors
 // $anchor-text-decoration: none;
 // $anchor-text-decoration-hover: none;
-$anchor-font-color: $gray;
-$anchor-font-color-hover: $primary-color;
+$anchor-font-color: $gray-medium;
+$anchor-font-color-hover: $secondary-color;
 
 // We use these to style the <hr> element
 // $hr-border-width: 1px;

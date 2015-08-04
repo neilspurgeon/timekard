@@ -5813,14 +5813,14 @@ td {
 
 /* Default Link Styles */
 a {
-  color: #E0E0E0;
+  color: #9E9E9E;
   text-decoration: none;
   line-height: inherit; }
   a[ui-sref] {
     cursor: pointer; }
   a:hover,
   a:focus {
-    color: #009688; }
+    color: #2962FF; }
   a img {
     border: none; }
 
@@ -6440,6 +6440,18 @@ button.flat {
 .warn:hover {
   color: #F44336; }
 
+.add-job-bttn {
+  width: 100%;
+  text-align: left;
+  margin-left: -38em;
+  margin: 0;
+  padding-left: 2rem;
+  background-color: #E0F2F1; }
+
+.add-job-bttn:hover {
+  background-color: #2962FF;
+  color: #FFFFFF; }
+
 .modal-container {
   position: fixed;
   left: 0;
@@ -6481,7 +6493,7 @@ button.flat {
   list-style: none; }
 
 .client-name-container {
-  background-color: #4DB6AC;
+  background-color: #009688;
   width: 100%;
   padding: 1rem 2rem;
   display: -webkit-inline-flex;
@@ -6514,14 +6526,6 @@ h4.job-total {
   padding: 2rem; }
   .client-jobs-container h1, .client-jobs-container h2, .client-jobs-container h3, .client-jobs-container h4, .client-jobs-container h5, .client-jobs-container h6, .client-jobs-container p {
     color: #616161; }
-
-.add-job-bttn {
-  width: 100%;
-  text-align: left;
-  margin-left: -38em;
-  margin: 0;
-  padding-left: 2rem;
-  background-color: #E0F2F1; }
 
 .timer-controls {
   position: absolute;

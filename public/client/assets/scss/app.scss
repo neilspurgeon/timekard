@@ -58,6 +58,22 @@ button.flat {
   color: $warning-color;
 }
 
+.add-job-bttn {
+  width: 100%;
+  text-align: left;
+  margin-left: -38em;
+  margin: 0;
+  padding-left: 2rem;
+  // font-size: 1em;
+  background-color: $primary-color-light;
+}
+
+.add-job-bttn:hover {
+  background-color: $secondary-color;
+  color: $white;
+}
+
+
 // Modal
 // ––––––––––––––––––––––––––––––––––––––––––––––––
 .modal-container {
@@ -112,7 +128,7 @@ button.flat {
 }
 
 .client-name-container {
-  background-color: $primary-color-medium;
+  background-color: $primary-color;
   width: 100%;
   padding: 1rem 2rem;
   display: inline-flex;
@@ -157,14 +173,7 @@ h4.job-total {
 //   border-bottom: 1px solid #000;
 //   display: flex;
 // }
-.add-job-bttn {
-  width: 100%;
-  text-align: left;
-  margin-left: -38em;
-  margin: 0;
-  padding-left: 2rem;
-  background-color: $primary-color-light;
-}
+
 
 .timer-controls {
   position: absolute;
