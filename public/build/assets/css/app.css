@@ -6505,7 +6505,7 @@ button.flat {
 h3.client-name, h4.client-total {
   width: 50%; }
 
-h3.client-name {
+h1, h2, h3, h4, h5, h6, p {
   white-space: normal;
   word-wrap: break-word;
   word-break: break-word; }
