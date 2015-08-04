@@ -13,18 +13,26 @@
       </div>
       <div>
         <!-- <button ng-click="addJob()" class="add-job-bttn">Add Job</button><br> -->
-        <button ng-click="inputToggle($index)" class="add-job-bttn" ng-hide="input[$index]">Add Job</button>
-        <button ng-click="inputToggle($index)" class="add-job-bttn" ng-show="input[$index]">Cancel</button>
-        <form ng-submit="addJob(job.name)" ng-show="input[$index]">
-          <input type="text" ng-model="job.name" name="{{client._id}}" placeholder="Enter Job Name"/>
-          <submit></submit>
-        </form>
+<!--         <button ng-click="inputToggle($index)" class="add-job-bttn" ng-hide="input[$index]">Add Job</button>
+        <button ng-click="inputToggle($index)" class="add-job-bttn" ng-show="input[$index]">Cancel</button> -->
+
       </div>
 
       <div class="client-jobs-container">
         <section class="block-list">
-          <header>Jobs</header>
-          <ul> 
+          <header class="align-justify">Jobs 
+            <a ng-click="inputToggle($index)" ng-hide="input[$index]" class="add-job-bttn">New +</a>
+            <a ng-click="inputToggle($index)" ng-show="input[$index]" class="cancel-job-bttn">Cancel</a>
+          </header>
+          <ul>
+            
+            <!-- Add Job Form -->
+            <form ng-submit="addJob(job.name)" ng-show="input[$index]">
+              <input type="text" ng-model="job.name" name="{{client._id}}" placeholder="Enter Job Name"/>
+              <submit></submit>
+            </form> 
+
+            <!-- Job List -->
             <li ng-repeat="job in client.jobs">
                 <a href="">
                     <h4 class="job-name small-6">{{job.name}}</h4>

@@ -57,25 +57,28 @@ button.flat {
   padding: 0;
 }
 
-.warn:hover {
-  color: $warning-color;
-}
-
-.add-job-bttn {
-  width: 100%;
-  text-align: left;
-  margin-left: -38em;
-  margin: 0;
-  padding-left: 2rem;
-  // font-size: 1em;
-  background-color: $primary-color-light;
+.add-job-bttn, .cancel-job-bttn {
+  float: right;
+  margin-right: 1em;
+  background-color: $white;
+  color: $primary-color;
 }
 
 .add-job-bttn:hover {
-  background-color: $secondary-color;
-  color: $white;
+  color: $primary-color;
 }
 
+.cancel-job-bttn {
+  color: $gray;
+}
+
+.cancel-job-bttn:hover {
+  color: $warning-color;
+}
+
+.warn:hover {
+  color: $warning-color;
+}
 
 // Modal
 // ––––––––––––––––––––––––––––––––––––––––––––––––
@@ -96,7 +99,7 @@ button.flat {
     background: $white;
     box-shadow: -1px 1px 5px 1px rgba(0, 0, 0, 0.1);
     margin-bottom: 0.5rem;
-    color: $dark-color;
+    // color: $dark-color;
     height: 100%;
     padding-bottom: 1em;
     // border-radius: 2px; //This is causing a bug in Chrome with scrolling.
@@ -130,7 +133,7 @@ button.flat {
 }
 
 .client-name-container {
-  background-color: $gray-medium;
+  background-color: $cool-gray;
   width: 100%;
   padding: 1rem 2rem;
   display: inline-flex;
@@ -166,9 +169,6 @@ h4.job-total {
 
 .client-jobs-container {
     padding: 2rem;
-    h1, h2, h3, h4, h5, h6, p {
-      color: $gray-dark;
-    }
 }
 
 // li.job {
@@ -176,6 +176,9 @@ h4.job-total {
 //   display: flex;
 // }
 
+.block-list ul {
+  border-top: $blocklist-item-border;
+}
 
 .timer-controls {
   position: absolute;

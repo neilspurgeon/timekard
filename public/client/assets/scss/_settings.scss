@@ -109,10 +109,14 @@ $success-color: #43AC6A;
 $warning-color: #F44336;
 $dark-color: #232323;
 $white: #FFFFFF;
-$gray: #E0E0E0;
-$gray-medium: #9E9E9E;
-$gray-dark: #616161;
+$black: #000;
 $gray-light: #FAFAFA;
+$gray-medium-light: #EEEEEE;
+$gray: #E0E0E0;
+$gray-medium-dark: #9E9E9E;
+$gray-dark: #616161;
+$cool-gray-light: #ECEFF1;
+$cool-gray: #B0BEC5;
 
 // We use these to make sure border radius matches unless we want it different.
 // $global-radius: 4px;
@@ -201,7 +205,7 @@ $h6-font-size: 1rem;
 // We use these to style anchors
 // $anchor-text-decoration: none;
 // $anchor-text-decoration-hover: none;
-$anchor-font-color: $gray-medium;
+$anchor-font-color: $gray-medium-dark;
 $anchor-font-color-hover: $secondary-color;
 
 // We use these to style the <hr> element
@@ -298,15 +302,15 @@ $anchor-font-color-hover: $secondary-color;
 // 9. Block List
 // - - - - - - - - - - - - - - -
 
-// $blocklist-background: #fff;
+$blocklist-background: $white;
 // $blocklist-fullbleed: true;
 // $blocklist-fontsize: 1rem;
 
 // $blocklist-item-padding: 0.8rem 1rem;
 // $blocklist-item-color: isitlight($blocklist-background, #000, #fff);
-// $blocklist-item-background-hover: smartscale($blocklist-background, 4.5%);
+$blocklist-item-background-hover: $cool-gray-light;
 // $blocklist-item-color-disabled: #999;
-// $blocklist-item-border: 1px solid smartscale($blocklist-background, 18.5%);
+$blocklist-item-border: 1px solid $cool-gray-light;
 
 // $blocklist-item-label-color: scale-color($blocklist-item-color, $lightness: 60%);
 // $blocklist-item-icon-size: 0.8;
