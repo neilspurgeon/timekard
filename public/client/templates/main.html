@@ -13,17 +13,25 @@
       </div>
 
       <div class="client-jobs-container">
-        <ul>
-          <li ng-repeat="job in client.jobs" class="job">
-            {{job.name}}
-            {{job.totalTime | msToTimeFilter}}
-            <!-- {{job.clockOn}} -->
-            <button ng-click="startJob()" ng-hide="job.clockOn" class="flat">Start</button>
-            <button ng-click="stopJob()" ng-show="job.clockOn" class="flat">Stop</button>
-            <button ng-click="deleteJob()" class="flat">Delete Job</button>
-          </li>
-        </ul>
-        <button ng-click="deleteClient()" class="flat">Delete Client</button>
+
+        <section class="block-list">
+          <header>Jobs</header>
+          <ul> 
+            <li ng-repeat="job in client.jobs">
+                <a href="">
+                    <h4 class="job-name small-6">{{job.name}}</h4>
+                    <h4 class="job-total small-3">{{job.totalTime | msToTimeFilter}}</h4>
+                </a>
+              <div class="timer-controls">
+                <a ng-click="startJob()" ng-hide="job.clockOn">Start</a>
+                <a ng-click="stopJob()" ng-show="job.clockOn">Stop</a>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+
+        <button ng-click="deleteClient()" class="flat warn">Delete Client</button>
       </div>
     </div>
   </div>

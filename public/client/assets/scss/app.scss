@@ -14,14 +14,14 @@ $title-bar-height: 3rem;
 .title-bar {
   height: $title-bar-height;
   padding: 0 1rem;
-  background-color: #FFF;
+  background-color: $white;
 }
 
 html, body {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  background-color: $light-bg;
+  background-color: $gray-light;
 }
 
 .main-content {
@@ -41,14 +41,21 @@ button {
 }
 
 button.raised {
-  background-color: #2962FF;
-  color: #FFF;
+  background-color: $secondary-color;
+  color: $white;
   border-radius: 2px;
 }
 
 button.flat {
   background-color: transparent;
-  color: #2962FF;
+  color: $gray;
+  width: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.warn:hover {
+  color: $warning-color;
 }
 
 // Modal
@@ -68,10 +75,10 @@ button.flat {
 // ––––––––––––––––––––––––––––––––––––––––––––––––
 
 .card-item {
-    background: #FFFFFF;
+    background: $white;
     box-shadow: -1px 1px 5px 1px rgba(0, 0, 0, 0.1);
     margin-bottom: 0.5rem;
-    color: #000;
+    color: $dark-color;
     height: 100%;
     padding-bottom: 1em;
     // border-radius: 2px; //This is causing a bug in Chrome with scrolling.
@@ -105,12 +112,12 @@ button.flat {
 }
 
 .client-name-container {
-  background-color: #4DB6AC;
+  background-color: $primary-color-medium;
   width: 100%;
   padding: 1rem 2rem;
   display: inline-flex;
   h1, h2, h3, h4, h5, h6, p {
-    color: #FFF;
+    color: $white;
   }
 }
 
@@ -127,23 +134,48 @@ h3.client-name {
 h4.client-total {
   font-size: $h3-font-size; 
   font-weight: $font-weight-light;
-  color: #FFF;
+  color: $white;
   text-align: right;
+}
+
+h4.job-name {
+  font-weight: $font-weight-normal;
+}
+
+h4.job-total {
+  font-weight: $font-weight-light;
 }
 
 .client-jobs-container {
     padding: 2rem;
+    h1, h2, h3, h4, h5, h6, p {
+      color: $gray-dark;
+    }
 }
 
-li.job {
-  border-bottom: 1px solid #000;
-}
+// li.job {
+//   border-bottom: 1px solid #000;
+//   display: flex;
+// }
 .add-job-bttn {
   width: 100%;
   text-align: left;
   margin-left: -38em;
   margin: 0;
   padding-left: 2rem;
+  background-color: $primary-color-light;
+}
+
+.timer-controls {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  text-transform: uppercase;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 
