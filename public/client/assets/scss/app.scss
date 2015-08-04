@@ -76,15 +76,14 @@ button.flat {
 
 // Modal
 // ––––––––––––––––––––––––––––––––––––––––––––––––
-.modal-container {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    background-color: $light-bg;
-    width: 100%;
-    height: calc(100vh - #{$title-bar-height});
-    padding: 0;
-    margin: 0;
+
+.modal-content {
+  position: fixed;
+  background-color: rgba(0,0,0,0.9);
+  z-index: 999;
+  width: 100%;
+  margin-top: -1em;
+  padding-top: 1em;
 }
 
 // Cards

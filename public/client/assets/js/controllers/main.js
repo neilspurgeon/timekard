@@ -2,7 +2,32 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
   function($scope, $http, $state, ClientResource) {
     
     $scope.clients = $scope.clients || ClientResource.query();
-    console.log($scope.clients);
+    
+    $scope.input = {open: false};
+    $scope.inputToggle = function($index) {
+      // Toggles open/close job input fields
+      // Sets focus to input field by clientId when opened 
+      var input = $scope.input;
+      var clientId = this.client._id;
+
+      if (input.open && input[$index] === true ) { //close input
+        $scope.input = {open: false};
+      } else if (input.open) { //close and open input                      
+        $scope.input = {open: true};
+        $scope.input[$index] = true;
+        window.setTimeout(function(){
+          var jobInput = document.querySelector("input[name ='" + clientId +"']");
+          jobInput.focus();
+        }, 10); //waits for DOM to load
+      } else { //open input                                            
+        $scope.input.open = true;
+        $scope.input[$index] = true;
+        window.setTimeout(function(){
+          var jobInput = document.querySelector("input[name ='" + clientId +"']");
+          jobInput.focus();
+        }, 10);//waits for DOM to load
+      }
+    };
 
     $scope.startJob = function() {
       var job = this.job;
@@ -28,18 +53,19 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
       });
     };
 
-    $scope.addJob = function() {
+    $scope.addJob = function(name) {
       var clientsArr = $scope.clients;
       var clientId = this.client._id;
       // get client index in arr
       // so we can update only the changed client
       var clientIndex = getIndex(clientsArr, clientId);
 
-      $http.post('/api/clients/' + clientId + '/jobs', {jobName: "somejobname"})
+      $http.post('/api/clients/' + clientId + '/jobs', {jobName: name})
       .then(function(result) {
         // update changed client in scope
         var updatedClient = result.data[0];
         $scope.clients[clientIndex] = updatedClient;
+        $scope.input = {open: false};
       });
 
     };

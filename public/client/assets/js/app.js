@@ -24,6 +24,11 @@
         templateUrl: 'templates/main.html',
         controller: 'MainCtrl'
       })
+      .state('main.addJob', {
+        url: 'addJob',
+        templateUrl: 'templates/main.addJob.html',
+        controller: 'MainCtrl'
+      })
       .state('addClient', {
         url: '/addClient',
         templateUrl: 'templates/main.addClientModal.html',

@@ -6452,15 +6452,13 @@ button.flat {
   background-color: #2962FF;
   color: #FFFFFF; }
 
-.modal-container {
+.modal-content {
   position: fixed;
-  left: 0;
-  bottom: 0;
-  background-color: #eceef1;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 999;
   width: 100%;
-  height: calc(100vh - 3rem);
-  padding: 0;
-  margin: 0; }
+  margin-top: -1em;
+  padding-top: 1em; }
 
 .card-item {
   background: #FFFFFF;

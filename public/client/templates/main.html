@@ -1,4 +1,7 @@
-<div ui-view></div>
+<!-- <div class="grid-frame modal-content" ng-show="$state.includes('main.addJob')">
+  <div ui-view class="grid-block align-center">
+  </div>
+</div> -->
 
 <div class="grid-content">
   <div class="client-list">
@@ -9,11 +12,16 @@
         <h4 class="client-total">{{ client.jobs | sumTotalFilter:'totalTime' | msToTimeFilter}}</h4>
       </div>
       <div>
-        <button ng-click="addJob()" class="add-job-bttn">Add Job</button><br>
+        <!-- <button ng-click="addJob()" class="add-job-bttn">Add Job</button><br> -->
+        <button ng-click="inputToggle($index)" class="add-job-bttn" ng-hide="input[$index]">Add Job</button>
+        <button ng-click="inputToggle($index)" class="add-job-bttn" ng-show="input[$index]">Cancel</button>
+        <form ng-submit="addJob(job.name)" ng-show="input[$index]">
+          <input type="text" ng-model="job.name" name="{{client._id}}" placeholder="Enter Job Name"/>
+          <submit></submit>
+        </form>
       </div>
 
       <div class="client-jobs-container">
-
         <section class="block-list">
           <header>Jobs</header>
           <ul> 
