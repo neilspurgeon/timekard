@@ -99,10 +99,10 @@ $font-weight-bold: bold;
 // $body-antialiased: true;
 
 // Application Colors
-$primary-color: #009688;
+$primary-color: #1976D2;
 $primary-color-light: #E0F2F1;
 $primary-color-medium: #4DB6AC;
-$secondary-color: #2962FF;
+$secondary-color: #009688;
 $alert-color: #F04124;
 $info-color: #A0D3E8;
 $success-color: #43AC6A;
@@ -607,7 +607,7 @@ $anchor-font-color-hover: $secondary-color;
 
 // $titlebar-center-width: 50%;
 // $titlebar-side-width: (100% - $titlebar-center-width) / 2;
-// $titlebar-background: #eee;
+$titlebar-background: $primary-color;
 // $titlebar-color: #000;
 // $titlebar-border: 1px solid #ccc;
 // $titlebar-padding: $global-padding;

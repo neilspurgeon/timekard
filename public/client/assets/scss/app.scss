@@ -14,7 +14,6 @@ $title-bar-height: 3rem;
 .title-bar {
   height: $title-bar-height;
   padding: 0 1rem;
-  background-color: $white;
 }
 
 html, body {
@@ -40,10 +39,14 @@ button {
   text-transform: uppercase;
 }
 
-button.raised {
-  background-color: $secondary-color;
+button.raised, button.nav-bttn {
+  background-color: $primary-color;
   color: $white;
   border-radius: 2px;
+}
+
+button.raised:hover, button.nav-bttn:hover {
+  background-color: #1565C0;
 }
 
 button.flat {
@@ -114,7 +117,7 @@ button.flat {
   vertical-align: top;
   overflow-y: scroll;
   max-height: calc(100vh - #{$title-bar-height} - 3em);
-  width: 30em;
+  width: 23em;
 }
 
 
@@ -127,7 +130,7 @@ button.flat {
 }
 
 .client-name-container {
-  background-color: $primary-color;
+  background-color: $gray-medium;
   width: 100%;
   padding: 1rem 2rem;
   display: inline-flex;

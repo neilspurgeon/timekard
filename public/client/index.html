@@ -21,9 +21,9 @@
         <span class="right nav-links">
           <a ui-sref="login" ng-hide="authenticated">Login</a>
           <a ui-sref="createAccount" ng-hide="authenticated">Create Account</a>
-          <a href="" ng-controller="UserCtrl" ng-click="logOut()" ng-show="authenticated">Log Out</a>
-          <button ui-sref="addClient" ng-show="authenticated" ng-hide="$state.includes('addClient')" class="raised">Add Client</button>
-          <button ui-sref="main" ng-show="$state.includes('addClient')" class="raised">Cancel</button>
+          <button ng-controller="UserCtrl" ng-click="logOut()" ng-show="authenticated" class="nav-bttn">Log Out</button>
+          <button ui-sref="addClient" ng-show="authenticated" ng-hide="$state.includes('addClient')" class="nav-bttn">Add Client</button>
+          <button ui-sref="main" ng-show="$state.includes('addClient')" class="nav-bttn">Cancel</button>
         </span>
       </div>
       
