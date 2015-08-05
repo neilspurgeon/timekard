@@ -32,6 +32,7 @@ html, body {
 button {
   margin: 1px;
   border: none;
+  border-radius: 3px;
   padding: .6rem 1em;
   min-width: 4rem;
   font-size: .9rem;
@@ -42,7 +43,6 @@ button {
 button.raised, button.nav-bttn {
   background-color: $primary-color;
   color: $white;
-  border-radius: 2px;
 }
 
 button.raised:hover, button.nav-bttn:hover {
@@ -57,28 +57,53 @@ button.flat {
   padding: 0;
 }
 
-.add-job-bttn, .cancel-job-bttn {
+button.outline {
+  background-color: $white;
+  color: $primary-color;
+  border: 1px solid #1976D2;
+}
+
+button.outline:hover {
+  background-color: $primary-color;
+  color: $white;
+  border: 1px solid #1976D2;
+}
+
+.add-job-bttn {
   float: right;
   margin-right: 1em;
   background-color: $white;
   color: $primary-color;
+}
+
+.add-job-bttn.disabled, .add-job-bttn.disabled:hover {
+  color: $gray;
 }
   
 .add-job-bttn:hover {
   color: $primary-color;
 }
 
-.cancel-job-bttn {
+button.cancel-job-bttn {
   color: $gray;
 }
 
-.cancel-job-bttn:hover {
+button.cancel-job-bttn:hover {
   color: $warning-color;
 }
 
-.warn:hover {
-  color: $warning-color;
+button.warn {
+  color: $gray-medium-dark;
+  border-color: $gray-medium-dark;
 }
+
+button.warn:hover {
+  color: $white;
+  border-color: $warning-color;
+  background-color: $warning-color;
+}
+
+
 
 // Modal
 // ––––––––––––––––––––––––––––––––––––––––––––––––
@@ -191,6 +216,16 @@ h4.job-total {
   display: flex;
   align-items: center;
 }
+
+.form-controls {
+  border-bottom: $blocklist-item-border;
+  padding: 1em 0;
+}
+
+.right {
+  float: right;
+}
+
 
 
 

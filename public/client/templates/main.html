@@ -20,16 +20,21 @@
 
       <div class="client-jobs-container">
         <section class="block-list">
-          <header class="align-justify">Jobs 
-            <a ng-click="inputToggle($index)" ng-hide="input[$index]" class="add-job-bttn">New +</a>
-            <a ng-click="inputToggle($index)" ng-show="input[$index]" class="cancel-job-bttn">Cancel</a>
+          <header>Jobs 
+            <a ng-click="inputToggle($index)" ng-hide="input[$index]" disabled="true" class="add-job-bttn">New +</a>
+            <a ng-show="input[$index]" class="add-job-bttn disabled">New +</a>
           </header>
           <ul>
             
             <!-- Add Job Form -->
             <form ng-submit="addJob(job.name)" ng-show="input[$index]">
               <input type="text" ng-model="job.name" name="{{client._id}}" placeholder="Enter Job Name"/>
-              <submit></submit>
+              <div class="form-controls">
+                <button ng-click="inputToggle($index)" class="outline warn">Cancel</button>
+                <button ng-click="addJob(job.name)" class="outline right">addJob</button>
+
+                <span class="clearfix"></span>
+              </div>
             </form> 
 
             <!-- Job List -->

@@ -6418,6 +6418,7 @@ html, body {
 button {
   margin: 1px;
   border: none;
+  border-radius: 3px;
   padding: 0.6rem 1em;
   min-width: 4rem;
   font-size: .9rem;
@@ -6426,8 +6427,7 @@ button {
 
 button.raised, button.nav-bttn {
   background-color: #1976D2;
-  color: #FFFFFF;
-  border-radius: 2px; }
+  color: #FFFFFF; }
 
 button.raised:hover, button.nav-bttn:hover {
   background-color: #1565C0; }
@@ -6439,23 +6439,42 @@ button.flat {
   margin: 0;
   padding: 0; }
 
-.add-job-bttn, .cancel-job-bttn {
+button.outline {
+  background-color: #FFFFFF;
+  color: #1976D2;
+  border: 1px solid #1976D2; }
+
+button.outline:hover {
+  background-color: #1976D2;
+  color: #FFFFFF;
+  border: 1px solid #1976D2; }
+
+.add-job-bttn {
   float: right;
   margin-right: 1em;
   background-color: #FFFFFF;
   color: #1976D2; }
 
+.add-job-bttn.disabled, .add-job-bttn.disabled:hover {
+  color: #E0E0E0; }
+
 .add-job-bttn:hover {
   color: #1976D2; }
 
-.cancel-job-bttn {
+button.cancel-job-bttn {
   color: #E0E0E0; }
 
-.cancel-job-bttn:hover {
+button.cancel-job-bttn:hover {
   color: #F44336; }
 
-.warn:hover {
-  color: #F44336; }
+button.warn {
+  color: #9E9E9E;
+  border-color: #9E9E9E; }
+
+button.warn:hover {
+  color: #FFFFFF;
+  border-color: #F44336;
+  background-color: #F44336; }
 
 .modal-content {
   position: fixed;
@@ -6544,3 +6563,10 @@ h4.job-total {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center; }
+
+.form-controls {
+  border-bottom: 1px solid #ECEFF1;
+  padding: 1em 0; }
+
+.right {
+  float: right; }
