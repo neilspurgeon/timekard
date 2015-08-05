@@ -69,6 +69,12 @@ button.outline:hover {
   border: 1px solid #1976D2;
 }
 
+button.outline.warn:hover {
+  color: $white;
+  border-color: $warning-color;
+  background-color: $warning-color;
+}
+
 .add-job-bttn {
   float: right;
   margin-right: 1em;
@@ -97,10 +103,8 @@ button.warn {
   border-color: $gray-medium-dark;
 }
 
-button.warn:hover {
-  color: $white;
-  border-color: $warning-color;
-  background-color: $warning-color;
+.warn:hover {
+  color: $warning-color;
 }
 
 
@@ -225,8 +229,16 @@ h4.job-total {
 .right {
   float: right;
 }
+// Action Sheet
+// ––––––––––––––––––––––––––––––––––––––––––––––––
 
-
+// This is the wrapper for your button and action sheet
+// Cards
+// ––––––––––––––––––––––––––––––––––––––––––––––––
+.action-sheet-container {
+  position: initial;
+  display: inline;
+}
 
 
 

@@ -5820,7 +5820,7 @@ a {
     cursor: pointer; }
   a:hover,
   a:focus {
-    color: #009688; }
+    color: #1976D2; }
   a img {
     border: none; }
 
@@ -6449,6 +6449,11 @@ button.outline:hover {
   color: #FFFFFF;
   border: 1px solid #1976D2; }
 
+button.outline.warn:hover {
+  color: #FFFFFF;
+  border-color: #F44336;
+  background-color: #F44336; }
+
 .add-job-bttn {
   float: right;
   margin-right: 1em;
@@ -6471,10 +6476,8 @@ button.warn {
   color: #9E9E9E;
   border-color: #9E9E9E; }
 
-button.warn:hover {
-  color: #FFFFFF;
-  border-color: #F44336;
-  background-color: #F44336; }
+.warn:hover {
+  color: #F44336; }
 
 .modal-content {
   position: fixed;
@@ -6570,3 +6573,7 @@ h4.job-total {
 
 .right {
   float: right; }
+
+.action-sheet-container {
+  position: initial;
+  display: inline; }
