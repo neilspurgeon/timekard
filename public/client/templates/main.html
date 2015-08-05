@@ -39,17 +39,12 @@
 
             <!-- Job List -->
             <li ng-repeat="job in client.jobs">
-                <a href="" zf-hard-toggle="{{job._id}}">
+                <a href="">
                     <h4 class="job-name small-6">{{job.name}}</h4>
 
                     <h4 class="job-total small-3">{{job.totalTime | msToTimeFilter}}</h4>
+                    <button ng-click="deleteJob()">Delete</button>
                 </a>
-                
-                <zf-action-sheet id="{{job._id}}">
-                  <zf-as-content position="top">
-                    <p>Message for you, sir!</p>
-                  </zf-as-content>
-                </zf-action-sheet>
 
               <div class="timer-controls">
                 <a ng-click="startJob()" ng-hide="job.clockOn">Start</a>
