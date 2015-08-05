@@ -39,17 +39,16 @@
 
             <!-- Job List -->
             <li ng-repeat="job in client.jobs">
-                <a href="">
-                    <h4 class="job-name small-6">{{job.name}}</h4>
-
-                    <h4 class="job-total small-3">{{job.totalTime | msToTimeFilter}}</h4>
-                    <button ng-click="deleteJob()">Delete</button>
-                </a>
-
-              <div class="timer-controls">
+              <div class="job-content small-9">
+                <h4 class="job-name">{{job.name}}</h4>
+                <a ng-click="deleteJob()">Delete</a>
+              </div>
+              <div class="job-content small-3 right">
+                <h4 class="job-total">{{job.totalTime | msToTimeFilter}}</h4>
                 <a ng-click="startJob()" ng-hide="job.clockOn">Start</a>
                 <a ng-click="stopJob()" ng-show="job.clockOn">Stop</a>
               </div>
+
             </li>
           </ul>
         </section>

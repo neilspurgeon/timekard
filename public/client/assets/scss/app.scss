@@ -138,8 +138,9 @@ button.warn {
   margin: 0;
   padding-bottom: 1em;
   width: 100%;
-  overflow-x: scroll;
-  overflow-y: hidden;
+  overflow: hidden;
+  // overflow-x: scroll;
+  // overflow-y: hidden;
   white-space : nowrap;
 }
 
@@ -209,16 +210,13 @@ h4.job-total {
   border-top: $blocklist-item-border;
 }
 
-.timer-controls {
-  position: absolute;
-  top: 50%;
-  right: 1rem;
-  -webkit-transform: translateY(-50%);
-  transform: translateY(-50%);
-  text-transform: uppercase;
-  height: 100%;
-  display: flex;
-  align-items: center;
+.block-list li {
+  margin: .5em 1em;
+  padding-bottom: .5em;}
+
+.job-content {
+  // width: 50%;
+  display: inline-block;
 }
 
 .form-controls {
@@ -228,6 +226,7 @@ h4.job-total {
 
 .right {
   float: right;
+  text-align: right;
 }
 // Action Sheet
 // ––––––––––––––––––––––––––––––––––––––––––––––––

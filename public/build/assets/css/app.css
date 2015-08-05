@@ -882,7 +882,7 @@ a, [ui-sref], [zf-open], [zf-close], [zf-toggle] {
       .block-list li > a:hover, .block-list li > label:hover {
         color: #000; }
     .block-list li > a:hover, .block-list li > label:hover, .block-list li select:hover {
-      background: #ECEFF1; }
+      background: none; }
     .block-list li.caution > a, .block-list li.caution > a:hover {
       color: #F04124; }
     .block-list li.disabled > a {
@@ -6498,8 +6498,7 @@ button.warn {
   margin: 0;
   padding-bottom: 1em;
   width: 100%;
-  overflow-x: scroll;
-  overflow-y: hidden;
+  overflow: hidden;
   white-space: nowrap; }
 
 .client-list-item {
@@ -6552,27 +6551,20 @@ h4.job-total {
 .block-list ul {
   border-top: 1px solid #ECEFF1; }
 
-.timer-controls {
-  position: absolute;
-  top: 50%;
-  right: 1rem;
-  -webkit-transform: translateY(-50%);
-  transform: translateY(-50%);
-  text-transform: uppercase;
-  height: 100%;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center; }
+.block-list li {
+  margin: 0.5em 1em;
+  padding-bottom: .5em; }
+
+.job-content {
+  display: inline-block; }
 
 .form-controls {
   border-bottom: 1px solid #ECEFF1;
   padding: 1em 0; }
 
 .right {
-  float: right; }
+  float: right;
+  text-align: right; }
 
 .action-sheet-container {
   position: initial;
