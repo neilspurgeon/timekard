@@ -32,8 +32,8 @@ html, body {
 button {
   margin: 1px;
   border: none;
-  padding: .6rem 0;
-  width: 7rem;
+  padding: .6rem 1em;
+  min-width: 4rem;
   font-size: .9rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -63,7 +63,7 @@ button.flat {
   background-color: $white;
   color: $primary-color;
 }
-
+  
 .add-job-bttn:hover {
   color: $primary-color;
 }
