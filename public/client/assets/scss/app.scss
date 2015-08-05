@@ -127,11 +127,15 @@ button.warn {
 .card-item {
     background: $white;
     box-shadow: -1px 1px 5px 1px rgba(0, 0, 0, 0.1);
-    margin-bottom: 0.5rem;
-    // color: $dark-color;
+    // margin-bottom: 0.5rem;
+    padding: 1em;
     height: 100%;
     padding-bottom: 1em;
     // border-radius: 2px; //This is causing a bug in Chrome with scrolling.
+}
+
+.client-list-item.card-item {
+  padding: 0;
 }
 
 .client-list{
@@ -239,6 +243,10 @@ h4.job-total {
   display: inline;
 }
 
+
+.user-form {
+  max-width: 30em;
+}
 
 
 

@@ -6490,9 +6490,12 @@ button.warn {
 .card-item {
   background: #FFFFFF;
   box-shadow: -1px 1px 5px 1px rgba(0, 0, 0, 0.1);
-  margin-bottom: 0.5rem;
+  padding: 1em;
   height: 100%;
   padding-bottom: 1em; }
+
+.client-list-item.card-item {
+  padding: 0; }
 
 .client-list {
   margin: 0;
@@ -6569,3 +6572,6 @@ h4.job-total {
 .action-sheet-container {
   position: initial;
   display: inline; }
+
+.user-form {
+  max-width: 30em; }

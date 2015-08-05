@@ -20,7 +20,7 @@
         <span class="left"><a href="/#!/"><img id="timekard-logo" src="/assets/img/timekard-logo.svg" alt="TimeKard" /></a></span>
         <span class="right nav-links">
           <button ui-sref="login" ng-hide="authenticated" class="nav-bttn">Login</button>
-          <button ui-sref="createAccount" ng-hide="authenticated" class="nav-bttn">Create Account</button>
+          <button ui-sref="createAccount" ng-hide="authenticated" class="nav-bttn">Sign Up</button>
           <button ng-controller="UserCtrl" ng-click="logOut()" ng-show="authenticated" class="nav-bttn">Log Out</button>
           <button ui-sref="addClient" ng-hide="!authenticated || $state.includes('addClient')" class="nav-bttn">Add Client</button>
           <button ui-sref="main" ng-show="$state.includes('addClient')" class="nav-bttn">Cancel</button>
