@@ -22,17 +22,20 @@
       .state('main', {
         url: '/',
         templateUrl: 'templates/main.html',
-        controller: 'MainCtrl'
+        controller: 'MainCtrl',
+        authenticate: true
       })
       .state('main.addJob', {
         url: 'addJob',
         templateUrl: 'templates/main.addJob.html',
-        controller: 'MainCtrl'
+        controller: 'MainCtrl',
+        authenticate: true
       })
       .state('addClient', {
         url: '/addClient',
         templateUrl: 'templates/main.addClientModal.html',
-        controller: 'MainCtrl'
+        controller: 'MainCtrl',
+        authenticate: true
       })
       .state('createAccount', {
         url: '/createAccount',
@@ -41,7 +44,8 @@
         animation: {
           enter: 'slideInDown',
           leave: 'fadeOut'
-        }
+        },
+        authenticate: false
       })
       .state('login', {
         url: '/login',
@@ -50,16 +54,26 @@
         animation: {
           enter: 'slideInDown',
           leave: 'fadeOut'
-        }
+        },
+        authenticate: false,
       });
 
       $urlRouterProvider.otherwise('/home');
 
   }
 
-  function run($state,$rootScope) {
+  function run($state, $rootScope, AuthService) {
     FastClick.attach(document.body);
     $rootScope.$state = $state;
+
+    $rootScope.$on('$stateChangeStart',
+      function(event, toState, toParams, fromState, fromParams) {
+        console.log('state change...')
+        if (toState.authenticate && !AuthService.isLogged) {
+          $state.go('login');
+          event.preventDefault();
+        }
+      });
   }
 
 })();
