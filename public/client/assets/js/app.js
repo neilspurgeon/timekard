@@ -68,7 +68,6 @@
 
     $rootScope.$on('$stateChangeStart',
       function(event, toState, toParams, fromState, fromParams) {
-        console.log('state change...')
         if (toState.authenticate && !AuthService.isLogged) {
           $state.go('login');
           event.preventDefault();
