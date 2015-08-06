@@ -1,18 +1,7 @@
-<div class="small-10 medium-5 large-4 card-item">
-  <div class="grid-content">
-    <div class="small-12 medium-2">
-      <h1>ADD CLIENT</h1>
-    </div>
-
-    <div class="align-center">
-      <form ng-submit="addClient(name)">
-        <label>
-          Name
-          <input type="text" ng-model="name"/>
-        </label>
-        <button type="submit">Submit</button>
-      </form> 
-    </div>
-
+<div class="card-item small-11 medium-6 user-form">
+  <h3>Add Client</h3>
+  <form ng-submit="addClient(client.name)">
+    <input type="text" ng-model="client.name" placeholder="name">
+    <button type="submit" class="outline">Add</button>
+  </form>
 </div>
-

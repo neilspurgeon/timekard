@@ -33,7 +33,7 @@
       })
       .state('addClient', {
         url: '/addClient',
-        templateUrl: 'templates/main.addClientModal.html',
+        templateUrl: 'templates/main.addClient.html',
         controller: 'MainCtrl',
         authenticate: true
       })
