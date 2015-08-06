@@ -127,11 +127,9 @@ button.warn {
 .card-item {
     background: $white;
     box-shadow: -1px 1px 5px 1px rgba(0, 0, 0, 0.1);
-    // margin-bottom: 0.5rem;
     padding: 1em;
     height: 100%;
     padding-bottom: 1em;
-    // border-radius: 2px; //This is causing a bug in Chrome with scrolling.
 }
 
 .client-list-item.card-item {
@@ -203,11 +201,6 @@ h4.job-total {
 .client-jobs-container {
     padding: 2rem;
 }
-
-// li.job {
-//   border-bottom: 1px solid #000;
-//   display: flex;
-// }
 
 .block-list ul {
   border-top: $blocklist-item-border;

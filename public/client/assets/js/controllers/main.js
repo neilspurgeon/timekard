@@ -2,6 +2,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
   function($scope, $http, $state, ClientResource) {
     
     $scope.clients = $scope.clients || ClientResource.query();
+    var jobTimer;
     
     $scope.input = {open: false};
     $scope.inputToggle = function($index) {
@@ -32,13 +33,31 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
     $scope.startJob = function() {
       var job = this.job;
       var clientId = this.$parent.client._id;
-      console.log(clientId);
+
       $http.put('/api/clients/' + clientId + '/jobs/' + job._id + '/start')
       .then(function(result) {
-        console.log(result);
         job.clockOn = true;
+        jobTimer = startTimer(job);
       });
     };
+
+    var startTimer = function(job) {
+      var initialTime = parseInt(job.totalTime, 10);
+      var startTime = new Date();
+
+      return window.setInterval(function() {
+        var total = new Date() - startTime;
+        $scope.$apply(function() {
+          job.totalTime = initialTime + total;
+        });
+      }, 1000);
+
+    };
+
+    var stopTimer = function(timerName) {
+      window.clearInterval(timerName);
+    };
+
 
     $scope.stopJob = function() {
       var job = this.job;
@@ -50,6 +69,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
         var updatedJob = result.data.jobs[0];
         job.clockOn = updatedJob.clockOn;
         job.totalTime = updatedJob.totalTime;
+        stopTimer(jobTimer);
       });
     };
 
