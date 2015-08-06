@@ -55,7 +55,7 @@
           enter: 'slideInDown',
           leave: 'fadeOut'
         },
-        authenticate: false,
+        authenticate: false
       });
 
       $urlRouterProvider.otherwise('/home');
@@ -69,6 +69,7 @@
     $rootScope.$on('$stateChangeStart',
       function(event, toState, toParams, fromState, fromParams) {
         if (toState.authenticate && !AuthService.isLogged) {
+          console.log(AuthService.isLogged)
           $state.go('login');
           event.preventDefault();
         }

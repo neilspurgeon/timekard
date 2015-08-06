@@ -4,8 +4,8 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state',
   $rootScope.authenticated = AuthService.isLogged || $window.sessionStorage.token;
   $scope.message = {};
 
-  $scope.createAccount = function() {
-    var jsonData = 'jsonStr='+JSON.stringify($scope.formData);
+  $scope.createAccount = function(user) {
+    var jsonData = 'jsonStr='+JSON.stringify(user);
 
     $http({
       url: '/users',
@@ -14,9 +14,10 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     })
     .success(function(data) {
+      AuthService.isLogged = true;
+      $rootScope.authenticated = true;
+      $window.sessionStorage.token = data.token;
       $state.go('main');
-      $scope.currentUser = data;
-      console.log($scope.currentUser);
     }).error(function(err){
       console.log(err);
     });
@@ -27,8 +28,8 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state',
       UserService.logIn(email, password)
       .success(function(data) {
         AuthService.isLogged = true;
-        $window.sessionStorage.token = data.token;
         $rootScope.authenticated = true;
+        $window.sessionStorage.token = data.token;
         $state.go('main');
       })
       .error(function(status, data) {

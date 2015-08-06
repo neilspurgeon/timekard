@@ -55,7 +55,7 @@
           enter: 'slideInDown',
           leave: 'fadeOut'
         },
-        authenticate: false,
+        authenticate: false
       });
 
       $urlRouterProvider.otherwise('/home');
@@ -69,6 +69,7 @@
     $rootScope.$on('$stateChangeStart',
       function(event, toState, toParams, fromState, fromParams) {
         if (toState.authenticate && !AuthService.isLogged) {
+          console.log(AuthService.isLogged)
           $state.go('login');
           event.preventDefault();
         }
@@ -208,8 +209,8 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state',
   $rootScope.authenticated = AuthService.isLogged || $window.sessionStorage.token;
   $scope.message = {};
 
-  $scope.createAccount = function() {
-    var jsonData = 'jsonStr='+JSON.stringify($scope.formData);
+  $scope.createAccount = function(user) {
+    var jsonData = 'jsonStr='+JSON.stringify(user);
 
     $http({
       url: '/users',
@@ -218,9 +219,10 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     })
     .success(function(data) {
+      AuthService.isLogged = true;
+      $rootScope.authenticated = true;
+      $window.sessionStorage.token = data.token;
       $state.go('main');
-      $scope.currentUser = data;
-      console.log($scope.currentUser);
     }).error(function(err){
       console.log(err);
     });
@@ -231,8 +233,8 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state',
       UserService.logIn(email, password)
       .success(function(data) {
         AuthService.isLogged = true;
-        $window.sessionStorage.token = data.token;
         $rootScope.authenticated = true;
+        $window.sessionStorage.token = data.token;
         $state.go('main');
       })
       .error(function(status, data) {
@@ -253,12 +255,12 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state',
 
 
 
-app.factory('AuthService', function() {
+app.factory('AuthService', ['$window', function($window) {
   var auth = {
-    isLogged: false
+    isLogged: $window.sessionStorage.token
   };
   return auth;
-});
+}]);
 app.factory('ClientResource', function($resource) {
   return $resource('/api/clients/:id');
 });

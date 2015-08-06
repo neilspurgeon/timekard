@@ -1,6 +1,6 @@
-app.factory('AuthService', function() {
+app.factory('AuthService', ['$window', function($window) {
   var auth = {
-    isLogged: false
+    isLogged: $window.sessionStorage.token
   };
   return auth;
-});
+}]);
