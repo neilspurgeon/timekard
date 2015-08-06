@@ -66,7 +66,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
 
 
     $scope.stopJob = function() {
-      runningJob
+      runningJob = null;
       var job = this.job;
       var clientId = this.$parent.client._id;
 
