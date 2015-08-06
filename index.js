@@ -49,8 +49,9 @@ app.post("/users", function (req, res) {
 		.createSecure(user.email, user.password, user.passwordConfirm, user.firstName, user.lastName,
 		function (err, user) {
 			if (user) {
-				req.login(user);
-				res.send(201);
+				var userData = {email: user.email, firstName: user.name.first};
+        var token = jwt.sign(user, secret.secretToken, { expiresInMinutes: 60 });
+				res.status(201).json({token: token, user: userData});
 			} else {
 				console.log(err.errors);
 				console.log("error: email already exists");
@@ -130,7 +131,7 @@ app.delete("/api/clients/:clientId/delete", function (req, res) {
       if (success) {
         res.status(200).send(success);
       } else {
-        res.status(400).send(err);;
+        res.status(400).send(err);
       }
     });
 });
