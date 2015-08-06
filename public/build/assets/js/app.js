@@ -93,6 +93,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
     
     $scope.clients = $scope.clients || ClientResource.query();
     var jobTimer;
+    var runningJob;
     
     $scope.input = {open: false};
     $scope.inputToggle = function($index) {
@@ -121,14 +122,19 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
     };
 
     $scope.startJob = function() {
-      var job = this.job;
-      var clientId = this.$parent.client._id;
+      if (runningJob) {
+        console.log(runningJob.job.name + ' is currently running in ' + runningJob.client.name + '. Please stop current job first.');
+      } else {
+        runningJob = {job: this.job, client: this.client};
+        var job = this.job;
+        var clientId = this.$parent.client._id;
 
-      $http.put('/api/clients/' + clientId + '/jobs/' + job._id + '/start')
-      .then(function(result) {
-        job.clockOn = true;
-        jobTimer = startTimer(job);
-      });
+        $http.put('/api/clients/' + clientId + '/jobs/' + job._id + '/start')
+        .then(function(result) {
+          job.clockOn = true;
+          jobTimer = startTimer(job);
+        });
+      }
     };
 
     var startTimer = function(job) {
@@ -150,6 +156,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
 
 
     $scope.stopJob = function() {
+      runningJob
       var job = this.job;
       var clientId = this.$parent.client._id;
 
