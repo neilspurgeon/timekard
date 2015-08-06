@@ -6501,7 +6501,8 @@ button.warn {
   margin: 0;
   padding-bottom: 1em;
   width: 100%;
-  overflow: hidden;
+  overflow-x: scroll;
+  overflow-y: hidden;
   white-space: nowrap; }
 
 .client-list-item {
