@@ -58,7 +58,7 @@
         authenticate: false
       });
 
-      $urlRouterProvider.otherwise('/home');
+      $urlRouterProvider.otherwise('/');
 
   }
 
