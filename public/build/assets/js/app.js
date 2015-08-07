@@ -195,7 +195,10 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
       .then(function(result) {
         // update changed client in scope
         var updatedClient = result.data[0];
-        $scope.clients[clientIndex] = updatedClient;
+        // the last job in the arr is new job
+        var updatedJobsArr = result.data[0].jobs;
+        var newJob = updatedJobsArr[updatedJobsArr.length - 1];
+        $scope.clients[clientIndex].jobs.push(newJob);
         $scope.input = {open: false};
       });
 
