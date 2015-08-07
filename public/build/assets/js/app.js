@@ -15,9 +15,9 @@
     .run(run)
   ;
 
-  config.$inject = ['$stateProvider', '$urlRouterProvider'];
+  config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
 
-  function config($stateProvider, $urlRouterProvider) {
+  function config($stateProvider, $urlRouterProvider, $httpProvider) {
     $stateProvider
       .state('main', {
         url: '/',
@@ -59,6 +59,7 @@
       });
 
       $urlRouterProvider.otherwise('/');
+      $httpProvider.interceptors.push('TokenInterceptor');
 
   }
 
@@ -79,10 +80,6 @@
 })();
 
 var app = angular.module('application');
-
-app.config(function ($httpProvider) {
-    $httpProvider.interceptors.push('TokenInterceptor');
-});
 app.controller('EntriesCtrl', ['$scope', 'Client', 
   function($scope, Client) {
     $scope.entries = Client.query();
