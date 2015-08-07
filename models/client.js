@@ -104,6 +104,7 @@ var getTotalTime = function (jobId, clientId, user, callback) {
 // Start timer
 clientSchema.statics.startTime = function (jobId, clientId, cb) {
 	var date = new Date();
+	console.log(jobId);
 
 	this.update(
 		{ _id: clientId, "jobs._id": jobId },
