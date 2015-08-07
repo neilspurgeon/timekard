@@ -1,3 +1,3 @@
-app.factory('ClientResource', function($resource) {
+app.factory('ClientResource', ['$resource', function($resource) {
   return $resource('/api/clients/:id');
-});
+}]);

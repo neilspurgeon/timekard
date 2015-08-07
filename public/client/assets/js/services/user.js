@@ -1,4 +1,4 @@
-app.factory('UserService', function($http) {
+app.factory('UserService', ['$http', function($http) {
   return {
     logIn: function(email, password) {
         return $http.post('/login', {email: email, password: password});
@@ -6,4 +6,4 @@ app.factory('UserService', function($http) {
     logOut: function() {
     }
   };
-});
+}]);

@@ -1,4 +1,4 @@
-app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {
+app.factory('TokenInterceptor', ['$q', '$window', '$location', 'AuthService', function ($q, $window, $location, AuthService) {
     return {
         request: function (config) {
             config.headers = config.headers || {};
@@ -14,7 +14,7 @@ app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {
  
         /* Set Auth.isAuthenticated to true if 200 received */
         response: function (response) {
-            if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthService.isAuthenticated) {
+            if (response !== null && response.status == 200 && $window.sessionStorage.token && !AuthService.isAuthenticated) {
                 AuthService.isAuthenticated = true;
             }
             return response || $q.when(response);
@@ -22,7 +22,7 @@ app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {
  
         /* Revoke client auth if 401 is received */
         responseError: function(rejection) {
-            if (rejection != null && rejection.status === 401 && ($window.sessionStorage.token || AuthService.isAuthenticated)) {
+            if (rejection !== null && rejection.status === 401 && ($window.sessionStorage.token || AuthService.isAuthenticated)) {
                 delete $window.sessionStorage.token;
                 AuthService.isAuthenticated = false;
                 $location.path("/admin/login");
@@ -31,4 +31,4 @@ app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {
             return $q.reject(rejection);
         }
     };
-});
+}]);
