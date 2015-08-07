@@ -17,7 +17,7 @@
 
   config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
 
-  function config($stateProvider, $urlRouterProvider, $httpProvider) {
+  function config($stateProvider, $urlRouterProvider, $httpProvider, TokenInterceptor) {
     $stateProvider
       .state('main', {
         url: '/',
