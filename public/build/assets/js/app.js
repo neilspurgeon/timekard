@@ -83,6 +83,83 @@ var app = angular.module('application');
 app.config(function ($httpProvider) {
     $httpProvider.interceptors.push('TokenInterceptor');
 });
+app.factory('AuthService', ['$window', function($window) {
+  var auth = {
+    isLogged: $window.sessionStorage.token
+  };
+  return auth;
+}]);
+app.factory('ClientResource', function($resource) {
+  return $resource('/api/clients/:id');
+});
+
+app.filter('msToTimeFilter', [function() {
+    return function(num) {
+        var secNum = Math.floor(parseInt(num, 10) / 1000);
+        var hours   = Math.floor(secNum / 3600);
+        var minutes = Math.floor((secNum - (hours * 3600)) / 60);
+        var seconds = secNum - (hours * 3600) - (minutes * 60);
+            
+        if (hours   < 10) {hours   = "0" + hours;}
+        if (minutes < 10) {minutes = "0" + minutes;}
+        if (seconds < 10) {seconds = "0" + seconds;}
+        var time    = hours + ':' + minutes + ':' + seconds;
+        return time;
+    };
+}]);  
+app.filter('sumTotalFilter', [function() {
+  return function (data, key) {
+    var sum = 0;
+    for (var i = 0; i < data.length; i++) {
+        sum = sum + parseInt(data[i][key]);
+    }
+    return sum;
+  };
+}]);  
+
+app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {
+    return {
+        request: function (config) {
+            config.headers = config.headers || {};
+            if ($window.sessionStorage.token) {
+                config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
+            }
+            return config;
+        },
+ 
+        requestError: function(rejection) {
+            return $q.reject(rejection);
+        },
+ 
+        /* Set Auth.isAuthenticated to true if 200 received */
+        response: function (response) {
+            if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthService.isAuthenticated) {
+                AuthService.isAuthenticated = true;
+            }
+            return response || $q.when(response);
+        },
+ 
+        /* Revoke client auth if 401 is received */
+        responseError: function(rejection) {
+            if (rejection != null && rejection.status === 401 && ($window.sessionStorage.token || AuthService.isAuthenticated)) {
+                delete $window.sessionStorage.token;
+                AuthService.isAuthenticated = false;
+                $location.path("/admin/login");
+            }
+ 
+            return $q.reject(rejection);
+        }
+    };
+});
+app.factory('UserService', function($http) {
+  return {
+    logIn: function(email, password) {
+        return $http.post('/login', {email: email, password: password});
+    },
+    logOut: function() {
+    }
+  };
+});
 app.controller('EntriesCtrl', ['$scope', 'Client', 
   function($scope, Client) {
     $scope.entries = Client.query();
@@ -93,8 +170,20 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
     
     $scope.clients = $scope.clients || ClientResource.query();
     var jobTimer;
-    var runningJob;
-    
+    var runningJob = 'init';
+
+    var checkRunningJobs = function(clientArr) {
+      
+      for (var i=0; i<clientArr.length; i++) {
+        var jobArr = clientArr[i].jobs;
+        for (var x=0; x<jobArr.length; x++) {
+          if (jobArr[x].clockOn) {
+            runningJob = {job: jobArr[x], client: clientArr[i]};
+          }
+        }
+      }
+    };
+
     $scope.input = {open: false};
     $scope.inputToggle = function($index) {
       // Toggles open/close job input fields
@@ -122,9 +211,10 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
     };
 
     $scope.startJob = function() {
-      if (runningJob) {
+
+      if (runningJob && runningJob !== 'init') {
         console.log(runningJob.job.name + ' is currently running in ' + runningJob.client.name + '. Please stop current job first.');
-      } else {
+      } else if (!runningJob && runningJob !== 'init') {
         runningJob = {job: this.job, client: this.client};
         var job = this.job;
         var clientId = this.$parent.client._id;
@@ -134,6 +224,9 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
           job.clockOn = true;
           jobTimer = startTimer(job);
         });
+      } else {
+        checkRunningJobs($scope.clients);
+        $scope.startJob();
       }
     };
 
@@ -281,81 +374,3 @@ app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state',
 }]);
 
 
-
-app.factory('AuthService', ['$window', function($window) {
-  var auth = {
-    isLogged: $window.sessionStorage.token
-  };
-  return auth;
-}]);
-app.factory('ClientResource', function($resource) {
-  return $resource('/api/clients/:id');
-});
-
-app.filter('msToTimeFilter', [function() {
-    return function(num) {
-        var secNum = Math.floor(parseInt(num, 10) / 1000);
-        var hours   = Math.floor(secNum / 3600);
-        var minutes = Math.floor((secNum - (hours * 3600)) / 60);
-        var seconds = secNum - (hours * 3600) - (minutes * 60);
-            
-        if (hours   < 10) {hours   = "0" + hours;}
-        if (minutes < 10) {minutes = "0" + minutes;}
-        if (seconds < 10) {seconds = "0" + seconds;}
-        var time    = hours + ':' + minutes + ':' + seconds;
-        return time;
-    };
-}]);  
-app.filter('sumTotalFilter', [function() {
-  return function (data, key) {
-    var sum = 0;
-    for (var i = 0; i < data.length; i++) {
-        sum = sum + parseInt(data[i][key]);
-    }
-    return sum;
-  };
-}]);  
-
-app.factory('TokenInterceptor', function ($q, $window, $location, AuthService) {
-    return {
-        request: function (config) {
-            config.headers = config.headers || {};
-            if ($window.sessionStorage.token) {
-                config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
-            }
-            return config;
-        },
- 
-        requestError: function(rejection) {
-            return $q.reject(rejection);
-        },
- 
-        /* Set Auth.isAuthenticated to true if 200 received */
-        response: function (response) {
-            if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthService.isAuthenticated) {
-                AuthService.isAuthenticated = true;
-            }
-            return response || $q.when(response);
-        },
- 
-        /* Revoke client auth if 401 is received */
-        responseError: function(rejection) {
-            if (rejection != null && rejection.status === 401 && ($window.sessionStorage.token || AuthService.isAuthenticated)) {
-                delete $window.sessionStorage.token;
-                AuthService.isAuthenticated = false;
-                $location.path("/admin/login");
-            }
- 
-            return $q.reject(rejection);
-        }
-    };
-});
-app.factory('UserService', function($http) {
-  return {
-    logIn: function(email, password) {
-        return $http.post('/login', {email: email, password: password});
-    },
-    logOut: function() {
-    }
-  };
-});
