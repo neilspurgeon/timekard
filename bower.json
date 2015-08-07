@@ -23,5 +23,8 @@
     "foundation-apps": "~1.1.0",
     "underscore": "~1.8.3",
     "angular-resource": "~1.4.3"
+  },
+  "resolutions": {
+    "angular": "1.2.0-rc.2"
   }
 }
