@@ -250,9 +250,6 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
         }
       });
     };
-    test = function() {
-      console.log(runningJob.job._id);
-    };
 
     var getIndex = function(arr, id) {
       for (var i=0; i<arr.length; i++) {
