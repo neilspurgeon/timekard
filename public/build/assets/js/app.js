@@ -97,6 +97,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
         for (var x=0; x<jobArr.length; x++) {
           if (jobArr[x].clockOn) {
             runningJob = {job: jobArr[x], client: clientArr[i]};
+            jobTimer = startTimer(jobArr[x]);
           }
         }
       }
