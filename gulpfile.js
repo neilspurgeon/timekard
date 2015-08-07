@@ -142,15 +142,15 @@ gulp.task('uglify:app', function() {
   ;
 });
 
-gulp.task('img', function() {
-  return gulp.src('./public/client/assets/img/*.*')
-  .pipe(gulp.dest('/public/build/assets/img/'));
-});
+// gulp.task('img', function() {
+//   return gulp.src('./public/client/assets/img/*.*')
+//   .pipe(gulp.dest('/public/build/assets/img/'));
+// });
 
 
 // Builds your entire app once, without starting a server
 gulp.task('build', function(cb) {
-  sequence('clean', ['copy', 'copy:foundation', 'sass', 'uglify', 'img'], 'copy:templates', cb);
+  sequence('clean', ['copy', 'copy:foundation', 'sass', 'uglify'], 'copy:templates', cb);
 });
 
 // Default task: builds your app, starts a server, and recompiles assets when they change
