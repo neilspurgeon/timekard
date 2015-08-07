@@ -40867,6 +40867,233 @@ angular.module('markdown', [])
 (function() {
   'use strict';
 
+  angular.module('foundation.actionsheet', ['foundation.core'])
+    .controller('ZfActionSheetController', zfActionSheetController)
+    .directive('zfActionSheet', zfActionSheet)
+    .directive('zfAsContent', zfAsContent)
+    .directive('zfAsButton', zfAsButton)
+    .service('FoundationActionSheet', FoundationActionSheet)
+  ;
+
+  FoundationActionSheet.$inject = ['FoundationApi'];
+
+  function FoundationActionSheet(foundationApi) {
+    var service    = {};
+
+    service.activate = activate;
+    service.deactivate = deactivate;
+
+    return service;
+
+    //target should be element ID
+    function activate(target) {
+      foundationApi.publish(target, 'show');
+    }
+
+    //target should be element ID
+    function deactivate(target) {
+      foundationApi.publish(target, 'hide');
+    }
+  }
+
+  zfActionSheetController.$inject = ['$scope', 'FoundationApi'];
+
+  function zfActionSheetController($scope, foundationApi) {
+    var controller = this;
+    var content = controller.content = $scope.content;
+    var container = controller.container = $scope.container;
+    var body = angular.element(document.body);
+
+    controller.registerContent = function(scope) {
+      content = scope;
+      content.active = false;
+    };
+
+    controller.registerContainer = function(scope) {
+      container = scope;
+      container.active = false;
+    };
+
+    controller.toggle = toggle;
+    controller.hide = hide;
+
+    controller.registerListener = function() {
+      document.body.addEventListener('click', listenerLogic);
+    };
+
+    controller.deregisterListener = function() {
+      document.body.removeEventListener('click', listenerLogic);
+    }
+
+    function listenerLogic(e) {
+      var el = e.target;
+      var insideActionSheet = false;
+
+      do {
+        if(el.classList && el.classList.contains('action-sheet-container')) {
+          insideActionSheet = true;
+          break;
+        }
+
+      } while ((el = el.parentNode));
+
+      if(!insideActionSheet) {
+        // if the element has a toggle attribute, do nothing
+        if (e.target.attributes['zf-toggle'] || e.target.attributes['zf-hard-toggle']) {
+          return;
+        };
+        // if the element is outside the action sheet and is NOT a toggle element, hide
+        hide();
+      }
+    }
+
+    function hide() {
+      content.hide();
+      container.hide();
+
+      content.$apply();
+      container.$apply();
+    }
+
+    function toggle() {
+      content.toggle();
+      container.toggle();
+
+      content.$apply();
+      container.$apply();
+    }
+  }
+
+  zfActionSheet.$inject = ['FoundationApi'];
+
+  function zfActionSheet(foundationApi) {
+    var directive = {
+      restrict: 'EA',
+      transclude: true,
+      replace: true,
+      templateUrl: 'components/actionsheet/actionsheet.html',
+      controller: 'ZfActionSheetController',
+      compile: compile
+    };
+
+    return directive;
+
+    function compile() {
+
+      return {
+        pre: preLink,
+        post: postLink
+      };
+
+      function preLink(scope, iElement, iAttrs) {
+        iAttrs.$set('zf-closable', 'actionsheet');
+      }
+
+      function postLink(scope, element, attrs, controller) {
+        var id = attrs.id || foundationApi.generateUuid();
+        attrs.$set('id', id);
+
+        scope.active = false;
+
+        foundationApi.subscribe(id, function(msg) {
+          if (msg === 'toggle') {
+            controller.toggle();
+          }
+
+          if (msg === 'hide' || msg === 'close') {
+            controller.hide();
+          }
+
+        });
+
+        controller.registerContainer(scope);
+
+        scope.toggle = function() {
+          scope.active = !scope.active;
+          return;
+        };
+
+        scope.hide = function() {
+          scope.active = false;
+          return;
+        };
+      }
+    }
+  }
+
+  zfAsContent.$inject = ['FoundationApi'];
+
+  function zfAsContent(foundationApi) {
+    var directive = {
+      restrict: 'EA',
+      transclude: true,
+      replace: true,
+      templateUrl: 'components/actionsheet/actionsheet-content.html',
+      require: '^zfActionSheet',
+      scope: {
+        position: '@?'
+      },
+      link: link
+    };
+
+    return directive;
+
+    function link(scope, element, attrs, controller) {
+      scope.active = false;
+      scope.position = scope.position || 'bottom';
+      controller.registerContent(scope);
+
+      scope.toggle = function() {
+        scope.active = !scope.active;
+        if(scope.active) {
+          controller.registerListener();
+        } else {
+          controller.deregisterListener();
+        }
+
+        return;
+      };
+
+      scope.hide = function() {
+        scope.active = false;
+        controller.deregisterListener();
+        return;
+      };
+    }
+  }
+
+  zfAsButton.$inject = ['FoundationApi'];
+
+  function zfAsButton(foundationApi) {
+    var directive = {
+      restrict: 'EA',
+      transclude: true,
+      replace: true,
+      templateUrl: 'components/actionsheet/actionsheet-button.html',
+      require: '^zfActionSheet',
+      scope: {
+        title: '@?'
+      },
+      link: link
+    }
+
+    return directive;
+
+    function link(scope, element, attrs, controller) {
+
+      element.on('click', function(e) {
+        controller.toggle();
+        e.preventDefault();
+      });
+
+    }
+  }
+
+})();
+
+(function() {
+  'use strict';
+
   angular.module('foundation.accordion', [])
     .controller('ZfAccordionController', zfAccordionController)
     .directive('zfAccordion', zfAccordion)
@@ -41144,415 +41371,96 @@ angular.module('markdown', [])
 
 })();
 
-(function () {
-  'use strict';
-
-  angular.module('foundation.iconic', [])
-    .provider('Iconic', Iconic)
-    .directive('zfIconic', zfIconic)
-  ;
-
-  // iconic wrapper
-  function Iconic() {
-    // default path
-    var assetPath = 'assets/img/iconic/';
-
-    /**
-     * Sets the path used to locate the iconic SVG files
-     * @param {string} path - the base path used to locate the iconic SVG files
-     */
-    this.setAssetPath = function (path) {
-      assetPath = angular.isString(path) ? path : assetPath;
-    };
-
-    /**
-     * Service implementation
-     * @returns {{}}
-     */
-    this.$get = function () {
-      var iconicObject = new IconicJS();
-
-      var service = {
-        getAccess: getAccess,
-        getAssetPath: getAssetPath
-      };
-
-      return service;
-
-      /**
-       *
-       * @returns {Window.IconicJS}
-       */
-      function getAccess() {
-        return iconicObject;
-      }
-
-      /**
-       *
-       * @returns {string}
-       */
-      function getAssetPath() {
-        return assetPath;
-      }
-    };
-  }
-
-  zfIconic.$inject = ['Iconic', 'FoundationApi', '$compile'];
-
-  function zfIconic(iconic, foundationApi, $compile) {
-    var directive = {
-      restrict: 'A',
-      template: '<img ng-transclude>',
-      transclude: true,
-      replace: true,
-      scope: {
-        dynSrc: '=?',
-        dynIcon: '=?',
-        size: '@?',
-        icon: '@',
-        iconDir: '@?'
-      },
-      compile: compile
-    };
-
-    return directive;
-
-    function compile() {
-      var contents, assetPath;
-
-      return {
-        pre: preLink,
-        post: postLink
-      };
-
-      function preLink(scope, element, attrs) {
-
-        if (scope.iconDir) {
-          // path set via attribute
-          assetPath = scope.iconDir;
-        } else {
-          // default path
-          assetPath = iconic.getAssetPath();
-        }
-        // make sure ends with /
-        if (assetPath.charAt(assetPath.length - 1) !== '/') {
-          assetPath += '/';
-        }
-
-        if (scope.dynSrc) {
-          attrs.$set('data-src', scope.dynSrc);
-        } else if (scope.dynIcon) {
-          attrs.$set('data-src', assetPath + scope.dynIcon + '.svg');
-        } else {
-          if (scope.icon) {
-            attrs.$set('data-src', assetPath + scope.icon + '.svg');
-          } else {
-            // To support expressions on data-src
-            attrs.$set('data-src', attrs.src);
-          }
-        }
-
-        // check if size already added as class
-        if (!element.hasClass('iconic-sm') && !element.hasClass('iconic-md') && !element.hasClass('iconic-lg')) {
-          var iconicClass;
-          switch (scope.size) {
-            case 'small':
-              iconicClass = 'iconic-sm';
-              break;
-            case 'medium':
-              iconicClass = 'iconic-md';
-              break;
-            case 'large':
-              iconicClass = 'iconic-lg';
-              break;
-            default:
-              iconicClass = 'iconic-fluid';
-          }
-          element.addClass(iconicClass);
-        }
-
-        // save contents of un-inject html, to use for dynamic re-injection
-        contents = element[0].outerHTML;
-      }
-
-      function postLink(scope, element, attrs) {
-        var svgElement, ico = iconic.getAccess();
-
-        injectSvg(element[0]);
-
-        foundationApi.subscribe('resize', function () {
-          // only run update on current element
-          ico.update(element[0]);
-        });
-
-        // handle dynamic updating of src
-        if (scope.dynSrc) {
-          scope.$watch('dynSrc', function (newVal, oldVal) {
-            if (newVal && newVal !== oldVal) {
-              reinjectSvg(scope.dynSrc);
-            }
-          });
-        }
-        // handle dynamic updating of icon
-        if (scope.dynIcon) {
-          scope.$watch('dynIcon', function (newVal, oldVal) {
-            if (newVal && newVal !== oldVal) {
-              reinjectSvg(assetPath + scope.dynIcon + '.svg');
-            }
-          });
-        }
-
-        function reinjectSvg(newSrc) {
-          if (svgElement) {
-            // set html
-            svgElement.empty();
-            svgElement.append(angular.element(contents));
-
-            // set new source
-            svgElement.attr('data-src', newSrc);
-
-            // reinject
-            injectSvg(svgElement[0]);
-          }
-        }
-
-        function injectSvg(element) {
-          ico.inject(element, {
-            each: function (injectedElem) {
-              // compile injected svg
-              var angElem = angular.element(injectedElem);
-              svgElement = $compile(angElem)(angElem.scope());
-            }
-          });
-        }
-      }
-    }
-  }
-
-})();
-
 (function() {
   'use strict';
 
-  angular.module('foundation.actionsheet', ['foundation.core'])
-    .controller('ZfActionSheetController', zfActionSheetController)
-    .directive('zfActionSheet', zfActionSheet)
-    .directive('zfAsContent', zfAsContent)
-    .directive('zfAsButton', zfAsButton)
-    .service('FoundationActionSheet', FoundationActionSheet)
+  angular.module('foundation.interchange', ['foundation.core', 'foundation.mediaquery'])
+    .directive('zfInterchange', zfInterchange)
   ;
 
-  FoundationActionSheet.$inject = ['FoundationApi'];
+  zfInterchange.$inject = [ '$compile', '$http', '$templateCache', 'FoundationApi', 'FoundationMQ'];
 
-  function FoundationActionSheet(foundationApi) {
-    var service    = {};
+  function zfInterchange($compile, $http, $templateCache, foundationApi, foundationMQ) {
 
-    service.activate = activate;
-    service.deactivate = deactivate;
-
-    return service;
-
-    //target should be element ID
-    function activate(target) {
-      foundationApi.publish(target, 'show');
-    }
-
-    //target should be element ID
-    function deactivate(target) {
-      foundationApi.publish(target, 'hide');
-    }
-  }
-
-  zfActionSheetController.$inject = ['$scope', 'FoundationApi'];
-
-  function zfActionSheetController($scope, foundationApi) {
-    var controller = this;
-    var content = controller.content = $scope.content;
-    var container = controller.container = $scope.container;
-    var body = angular.element(document.body);
-
-    controller.registerContent = function(scope) {
-      content = scope;
-      content.active = false;
-    };
-
-    controller.registerContainer = function(scope) {
-      container = scope;
-      container.active = false;
-    };
-
-    controller.toggle = toggle;
-    controller.hide = hide;
-
-    controller.registerListener = function() {
-      document.body.addEventListener('click', listenerLogic);
-    };
-
-    controller.deregisterListener = function() {
-      document.body.removeEventListener('click', listenerLogic);
-    }
-
-    function listenerLogic(e) {
-      var el = e.target;
-      var insideActionSheet = false;
-
-      do {
-        if(el.classList && el.classList.contains('action-sheet-container')) {
-          insideActionSheet = true;
-          break;
-        }
-
-      } while ((el = el.parentNode));
-
-      if(!insideActionSheet) {
-        // if the element has a toggle attribute, do nothing
-        if (e.target.attributes['zf-toggle'] || e.target.attributes['zf-hard-toggle']) {
-          return;
-        };
-        // if the element is outside the action sheet and is NOT a toggle element, hide
-        hide();
-      }
-    }
-
-    function hide() {
-      content.hide();
-      container.hide();
-
-      content.$apply();
-      container.$apply();
-    }
-
-    function toggle() {
-      content.toggle();
-      container.toggle();
-
-      content.$apply();
-      container.$apply();
-    }
-  }
-
-  zfActionSheet.$inject = ['FoundationApi'];
-
-  function zfActionSheet(foundationApi) {
     var directive = {
       restrict: 'EA',
-      transclude: true,
+      transclude: 'element',
+      scope: {
+        position: '@'
+      },
       replace: true,
-      templateUrl: 'components/actionsheet/actionsheet.html',
-      controller: 'ZfActionSheetController',
-      compile: compile
+      template: '<div></div>',
+      link: link
     };
 
     return directive;
 
-    function compile() {
+    function link(scope, element, attrs, ctrl, transclude) {
+      var childScope, current, scenarios, innerTemplates;
 
-      return {
-        pre: preLink,
-        post: postLink
-      };
+      var globalQueries = foundationMQ.getMediaQueries();
 
-      function preLink(scope, iElement, iAttrs) {
-        iAttrs.$set('zf-closable', 'actionsheet');
-      }
-
-      function postLink(scope, element, attrs, controller) {
-        var id = attrs.id || foundationApi.generateUuid();
-        attrs.$set('id', id);
-
-        scope.active = false;
-
-        foundationApi.subscribe(id, function(msg) {
-          if (msg === 'toggle') {
-            controller.toggle();
+      //setup
+      foundationApi.subscribe('resize', function(msg) {
+        transclude(function(clone, newScope) {
+          if(!scenarios || !innerTemplates) {
+            collectInformation(clone);
           }
 
-          if (msg === 'hide' || msg === 'close') {
-            controller.hide();
-          }
+          var ruleMatches = foundationMQ.match(scenarios);
+          var scenario = ruleMatches.length === 0 ? null : scenarios[ruleMatches[0].ind];
 
+          //this could use some love
+          if(scenario && checkScenario(scenario)) {
+            var compiled;
+
+            if(childScope) {
+              childScope.$destroy();
+              childScope = null;
+            }
+
+            if(typeof scenario.templ !== 'undefined') {
+              childScope = newScope;
+
+              //temp container
+              var tmp = document.createElement('div');
+              tmp.appendChild(innerTemplates[scenario.templ][0]);
+
+              element.html(tmp.innerHTML);
+              $compile(element.contents())(childScope);
+              current = scenario;
+            } else {
+              var loader = templateLoader(scenario.src);
+              loader.success(function(html) {
+                childScope = newScope;
+                element.html(html);
+              }).then(function(){
+                $compile(element.contents())(childScope);
+                current = scenario;
+              });
+            }
+          }
         });
 
-        controller.registerContainer(scope);
-
-        scope.toggle = function() {
-          scope.active = !scope.active;
-          return;
-        };
-
-        scope.hide = function() {
-          scope.active = false;
-          return;
-        };
-      }
-    }
-  }
-
-  zfAsContent.$inject = ['FoundationApi'];
-
-  function zfAsContent(foundationApi) {
-    var directive = {
-      restrict: 'EA',
-      transclude: true,
-      replace: true,
-      templateUrl: 'components/actionsheet/actionsheet-content.html',
-      require: '^zfActionSheet',
-      scope: {
-        position: '@?'
-      },
-      link: link
-    };
-
-    return directive;
-
-    function link(scope, element, attrs, controller) {
-      scope.active = false;
-      scope.position = scope.position || 'bottom';
-      controller.registerContent(scope);
-
-      scope.toggle = function() {
-        scope.active = !scope.active;
-        if(scope.active) {
-          controller.registerListener();
-        } else {
-          controller.deregisterListener();
-        }
-
-        return;
-      };
-
-      scope.hide = function() {
-        scope.active = false;
-        controller.deregisterListener();
-        return;
-      };
-    }
-  }
-
-  zfAsButton.$inject = ['FoundationApi'];
-
-  function zfAsButton(foundationApi) {
-    var directive = {
-      restrict: 'EA',
-      transclude: true,
-      replace: true,
-      templateUrl: 'components/actionsheet/actionsheet-button.html',
-      require: '^zfActionSheet',
-      scope: {
-        title: '@?'
-      },
-      link: link
-    }
-
-    return directive;
-
-    function link(scope, element, attrs, controller) {
-
-      element.on('click', function(e) {
-        controller.toggle();
-        e.preventDefault();
       });
 
+      //init
+      foundationApi.publish('resize', 'initial resize');
+
+      function templateLoader(templateUrl) {
+        return $http.get(templateUrl, {cache: $templateCache});
+      }
+
+      function collectInformation(el) {
+        var data = foundationMQ.collectScenariosFromElement(el);
+
+        scenarios = data.scenarios;
+        innerTemplates = data.templates;
+      }
+
+      function checkScenario(scenario) {
+        return !current || current !== scenario;
+      }
     }
   }
 
@@ -41846,101 +41754,6 @@ angular.module('markdown', [])
 
     }
 
-  }
-
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('foundation.interchange', ['foundation.core', 'foundation.mediaquery'])
-    .directive('zfInterchange', zfInterchange)
-  ;
-
-  zfInterchange.$inject = [ '$compile', '$http', '$templateCache', 'FoundationApi', 'FoundationMQ'];
-
-  function zfInterchange($compile, $http, $templateCache, foundationApi, foundationMQ) {
-
-    var directive = {
-      restrict: 'EA',
-      transclude: 'element',
-      scope: {
-        position: '@'
-      },
-      replace: true,
-      template: '<div></div>',
-      link: link
-    };
-
-    return directive;
-
-    function link(scope, element, attrs, ctrl, transclude) {
-      var childScope, current, scenarios, innerTemplates;
-
-      var globalQueries = foundationMQ.getMediaQueries();
-
-      //setup
-      foundationApi.subscribe('resize', function(msg) {
-        transclude(function(clone, newScope) {
-          if(!scenarios || !innerTemplates) {
-            collectInformation(clone);
-          }
-
-          var ruleMatches = foundationMQ.match(scenarios);
-          var scenario = ruleMatches.length === 0 ? null : scenarios[ruleMatches[0].ind];
-
-          //this could use some love
-          if(scenario && checkScenario(scenario)) {
-            var compiled;
-
-            if(childScope) {
-              childScope.$destroy();
-              childScope = null;
-            }
-
-            if(typeof scenario.templ !== 'undefined') {
-              childScope = newScope;
-
-              //temp container
-              var tmp = document.createElement('div');
-              tmp.appendChild(innerTemplates[scenario.templ][0]);
-
-              element.html(tmp.innerHTML);
-              $compile(element.contents())(childScope);
-              current = scenario;
-            } else {
-              var loader = templateLoader(scenario.src);
-              loader.success(function(html) {
-                childScope = newScope;
-                element.html(html);
-              }).then(function(){
-                $compile(element.contents())(childScope);
-                current = scenario;
-              });
-            }
-          }
-        });
-
-      });
-
-      //init
-      foundationApi.publish('resize', 'initial resize');
-
-      function templateLoader(templateUrl) {
-        return $http.get(templateUrl, {cache: $templateCache});
-      }
-
-      function collectInformation(el) {
-        var data = foundationMQ.collectScenariosFromElement(el);
-
-        scenarios = data.scenarios;
-        innerTemplates = data.templates;
-      }
-
-      function checkScenario(scenario) {
-        return !current || current !== scenario;
-      }
-    }
   }
 
 })();
@@ -42363,103 +42176,187 @@ angular.module('markdown', [])
   }
 })();
 
-(function() {
+(function () {
   'use strict';
 
-  angular.module('foundation.offcanvas', ['foundation.core'])
-    .directive('zfOffcanvas', zfOffcanvas)
-    .service('FoundationOffcanvas', FoundationOffcanvas)
+  angular.module('foundation.iconic', [])
+    .provider('Iconic', Iconic)
+    .directive('zfIconic', zfIconic)
   ;
 
-  FoundationOffcanvas.$inject = ['FoundationApi'];
+  // iconic wrapper
+  function Iconic() {
+    // default path
+    var assetPath = 'assets/img/iconic/';
 
-  function FoundationOffcanvas(foundationApi) {
-    var service    = {};
+    /**
+     * Sets the path used to locate the iconic SVG files
+     * @param {string} path - the base path used to locate the iconic SVG files
+     */
+    this.setAssetPath = function (path) {
+      assetPath = angular.isString(path) ? path : assetPath;
+    };
 
-    service.activate = activate;
-    service.deactivate = deactivate;
+    /**
+     * Service implementation
+     * @returns {{}}
+     */
+    this.$get = function () {
+      var iconicObject = new IconicJS();
 
-    return service;
+      var service = {
+        getAccess: getAccess,
+        getAssetPath: getAssetPath
+      };
 
-    //target should be element ID
-    function activate(target) {
-      foundationApi.publish(target, 'show');
-    }
+      return service;
 
-    //target should be element ID
-    function deactivate(target) {
-      foundationApi.publish(target, 'hide');
-    }
+      /**
+       *
+       * @returns {Window.IconicJS}
+       */
+      function getAccess() {
+        return iconicObject;
+      }
 
-    function toggle(target) {
-      foundationApi.publish(target, 'toggle');
-    }
+      /**
+       *
+       * @returns {string}
+       */
+      function getAssetPath() {
+        return assetPath;
+      }
+    };
   }
 
-  zfOffcanvas.$inject = ['FoundationApi'];
+  zfIconic.$inject = ['Iconic', 'FoundationApi', '$compile'];
 
-  function zfOffcanvas(foundationApi) {
+  function zfIconic(iconic, foundationApi, $compile) {
     var directive = {
-      restrict: 'EA',
-      templateUrl: 'components/offcanvas/offcanvas.html',
+      restrict: 'A',
+      template: '<img ng-transclude>',
       transclude: true,
-      scope: {
-        position: '@'
-      },
       replace: true,
+      scope: {
+        dynSrc: '=?',
+        dynIcon: '=?',
+        size: '@?',
+        icon: '@',
+        iconDir: '@?'
+      },
       compile: compile
     };
 
     return directive;
 
-    function compile(tElement, tAttrs, transclude) {
-      var type = 'offcanvas';
+    function compile() {
+      var contents, assetPath;
 
       return {
         pre: preLink,
         post: postLink
-      }
+      };
 
-      function preLink(scope, iElement, iAttrs, controller) {
-        iAttrs.$set('zf-closable', type);
-        document.body.classList.add('has-off-canvas');
+      function preLink(scope, element, attrs) {
+
+        if (scope.iconDir) {
+          // path set via attribute
+          assetPath = scope.iconDir;
+        } else {
+          // default path
+          assetPath = iconic.getAssetPath();
+        }
+        // make sure ends with /
+        if (assetPath.charAt(assetPath.length - 1) !== '/') {
+          assetPath += '/';
+        }
+
+        if (scope.dynSrc) {
+          attrs.$set('data-src', scope.dynSrc);
+        } else if (scope.dynIcon) {
+          attrs.$set('data-src', assetPath + scope.dynIcon + '.svg');
+        } else {
+          if (scope.icon) {
+            attrs.$set('data-src', assetPath + scope.icon + '.svg');
+          } else {
+            // To support expressions on data-src
+            attrs.$set('data-src', attrs.src);
+          }
+        }
+
+        // check if size already added as class
+        if (!element.hasClass('iconic-sm') && !element.hasClass('iconic-md') && !element.hasClass('iconic-lg')) {
+          var iconicClass;
+          switch (scope.size) {
+            case 'small':
+              iconicClass = 'iconic-sm';
+              break;
+            case 'medium':
+              iconicClass = 'iconic-md';
+              break;
+            case 'large':
+              iconicClass = 'iconic-lg';
+              break;
+            default:
+              iconicClass = 'iconic-fluid';
+          }
+          element.addClass(iconicClass);
+        }
+
+        // save contents of un-inject html, to use for dynamic re-injection
+        contents = element[0].outerHTML;
       }
 
       function postLink(scope, element, attrs) {
-        scope.position = scope.position || 'left';
+        var svgElement, ico = iconic.getAccess();
 
-        scope.active = false;
-        //setup
-        foundationApi.subscribe(attrs.id, function(msg) {
-          if(msg === 'show' || msg === 'open') {
-            scope.show();
-          } else if (msg === 'close' || msg === 'hide') {
-            scope.hide();
-          } else if (msg === 'toggle') {
-            scope.toggle();
-          }
+        injectSvg(element[0]);
 
-          if (!scope.$root.$$phase) {
-            scope.$apply();
-          }
-          
-          return;
+        foundationApi.subscribe('resize', function () {
+          // only run update on current element
+          ico.update(element[0]);
         });
 
-        scope.hide = function() {
-          scope.active = false;
-          return;
-        };
+        // handle dynamic updating of src
+        if (scope.dynSrc) {
+          scope.$watch('dynSrc', function (newVal, oldVal) {
+            if (newVal && newVal !== oldVal) {
+              reinjectSvg(scope.dynSrc);
+            }
+          });
+        }
+        // handle dynamic updating of icon
+        if (scope.dynIcon) {
+          scope.$watch('dynIcon', function (newVal, oldVal) {
+            if (newVal && newVal !== oldVal) {
+              reinjectSvg(assetPath + scope.dynIcon + '.svg');
+            }
+          });
+        }
 
-        scope.show = function() {
-          scope.active = true;
-          return;
-        };
+        function reinjectSvg(newSrc) {
+          if (svgElement) {
+            // set html
+            svgElement.empty();
+            svgElement.append(angular.element(contents));
 
-        scope.toggle = function() {
-          scope.active = !scope.active;
-          return;
-        };
+            // set new source
+            svgElement.attr('data-src', newSrc);
+
+            // reinject
+            injectSvg(svgElement[0]);
+          }
+        }
+
+        function injectSvg(element) {
+          ico.inject(element, {
+            each: function (injectedElem) {
+              // compile injected svg
+              var angElem = angular.element(injectedElem);
+              svgElement = $compile(angElem)(angElem.scope());
+            }
+          });
+        }
       }
     }
   }
@@ -43078,6 +42975,109 @@ angular.module('markdown', [])
           }
 
         });
+      }
+    }
+  }
+
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('foundation.offcanvas', ['foundation.core'])
+    .directive('zfOffcanvas', zfOffcanvas)
+    .service('FoundationOffcanvas', FoundationOffcanvas)
+  ;
+
+  FoundationOffcanvas.$inject = ['FoundationApi'];
+
+  function FoundationOffcanvas(foundationApi) {
+    var service    = {};
+
+    service.activate = activate;
+    service.deactivate = deactivate;
+
+    return service;
+
+    //target should be element ID
+    function activate(target) {
+      foundationApi.publish(target, 'show');
+    }
+
+    //target should be element ID
+    function deactivate(target) {
+      foundationApi.publish(target, 'hide');
+    }
+
+    function toggle(target) {
+      foundationApi.publish(target, 'toggle');
+    }
+  }
+
+  zfOffcanvas.$inject = ['FoundationApi'];
+
+  function zfOffcanvas(foundationApi) {
+    var directive = {
+      restrict: 'EA',
+      templateUrl: 'components/offcanvas/offcanvas.html',
+      transclude: true,
+      scope: {
+        position: '@'
+      },
+      replace: true,
+      compile: compile
+    };
+
+    return directive;
+
+    function compile(tElement, tAttrs, transclude) {
+      var type = 'offcanvas';
+
+      return {
+        pre: preLink,
+        post: postLink
+      }
+
+      function preLink(scope, iElement, iAttrs, controller) {
+        iAttrs.$set('zf-closable', type);
+        document.body.classList.add('has-off-canvas');
+      }
+
+      function postLink(scope, element, attrs) {
+        scope.position = scope.position || 'left';
+
+        scope.active = false;
+        //setup
+        foundationApi.subscribe(attrs.id, function(msg) {
+          if(msg === 'show' || msg === 'open') {
+            scope.show();
+          } else if (msg === 'close' || msg === 'hide') {
+            scope.hide();
+          } else if (msg === 'toggle') {
+            scope.toggle();
+          }
+
+          if (!scope.$root.$$phase) {
+            scope.$apply();
+          }
+          
+          return;
+        });
+
+        scope.hide = function() {
+          scope.active = false;
+          return;
+        };
+
+        scope.show = function() {
+          scope.active = true;
+          return;
+        };
+
+        scope.toggle = function() {
+          scope.active = !scope.active;
+          return;
+        };
       }
     }
   }
