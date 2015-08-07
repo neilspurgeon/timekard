@@ -1,12 +1,19 @@
 app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource', 
   function($scope, $http, $state, ClientResource) {
     
-    $scope.clients = $scope.clients || ClientResource.query();
+    var clientQuery = ClientResource.query().$promise.then(function(results) {
+      $scope.clients = results;
+    });
+
+    $scope.clients = $scope.clients || clientQuery;
     var jobTimer;
     var runningJob = 'init';
 
+
+
     var checkRunningJobs = function(clientArr) {
-      
+      runningJob = null;
+
       for (var i=0; i<clientArr.length; i++) {
         var jobArr = clientArr[i].jobs;
         for (var x=0; x<jobArr.length; x++) {
@@ -43,23 +50,23 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
       }
     };
 
-    $scope.startJob = function() {
+    $scope.startJob = function(jobParam, clientParam) {
+      var job = jobParam || this.job; 
+      var client = clientParam || this.$parent.client;
 
       if (runningJob && runningJob !== 'init') {
         console.log(runningJob.job.name + ' is currently running in ' + runningJob.client.name + '. Please stop current job first.');
       } else if (!runningJob && runningJob !== 'init') {
-        runningJob = {job: this.job, client: this.client};
-        var job = this.job;
-        var clientId = this.$parent.client._id;
+        runningJob = {job: job, client: client};
 
-        $http.put('/api/clients/' + clientId + '/jobs/' + job._id + '/start')
+        $http.put('/api/clients/' + client._id + '/jobs/' + job._id + '/start')
         .then(function(result) {
           job.clockOn = true;
           jobTimer = startTimer(job);
         });
       } else {
         checkRunningJobs($scope.clients);
-        $scope.startJob();
+        $scope.startJob(job, client);
       }
     };
 
@@ -124,6 +131,10 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
       .then(function(result) {
         // remove job from scope
         $scope.clients[clientIndex].jobs.splice(jobIndex, 1);
+        // reset running job if deleted job was running
+        if (runningJob.job._id === job._id) {
+          runningJob = null;
+        }
       });
     };
     
@@ -143,7 +154,14 @@ app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource',
       $http.delete('/api/clients/' + clientId + '/delete')
       .then(function(result){
         $scope.clients.splice(clientIndex, 1);
+        // reset running job if one of the client's jobs were running
+        if (runningJob.client._id === clientId) {
+          runningJob = null;
+        }
       });
+    };
+    test = function() {
+      console.log(runningJob.job._id);
     };
 
     var getIndex = function(arr, id) {

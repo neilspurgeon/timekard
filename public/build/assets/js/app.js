@@ -83,6 +83,239 @@ var app = angular.module('application');
 app.config(function ($httpProvider) {
     $httpProvider.interceptors.push('TokenInterceptor');
 });
+app.controller('EntriesCtrl', ['$scope', 'Client', 
+  function($scope, Client) {
+    $scope.entries = Client.query();
+  }
+]);
+app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource', 
+  function($scope, $http, $state, ClientResource) {
+    
+    var clientQuery = ClientResource.query().$promise.then(function(results) {
+      $scope.clients = results;
+    });
+
+    $scope.clients = $scope.clients || clientQuery;
+    var jobTimer;
+    var runningJob = 'init';
+
+
+
+    var checkRunningJobs = function(clientArr) {
+      runningJob = null;
+
+      for (var i=0; i<clientArr.length; i++) {
+        var jobArr = clientArr[i].jobs;
+        for (var x=0; x<jobArr.length; x++) {
+          if (jobArr[x].clockOn) {
+            runningJob = {job: jobArr[x], client: clientArr[i]};
+          }
+        }
+      }
+    };
+
+    $scope.input = {open: false};
+    $scope.inputToggle = function($index) {
+      // Toggles open/close job input fields
+      // Sets focus to input field by clientId when opened 
+      var input = $scope.input;
+      var clientId = this.client._id;
+
+      if (input.open && input[$index] === true ) { //close input
+        $scope.input = {open: false};
+      } else if (input.open) { //close and open input                      
+        $scope.input = {open: true};
+        $scope.input[$index] = true;
+        window.setTimeout(function(){
+          var jobInput = document.querySelector("input[name ='" + clientId +"']");
+          jobInput.focus();
+        }, 10); //waits for DOM to load
+      } else { //open input                                            
+        $scope.input.open = true;
+        $scope.input[$index] = true;
+        window.setTimeout(function(){
+          var jobInput = document.querySelector("input[name ='" + clientId +"']");
+          jobInput.focus();
+        }, 10);//waits for DOM to load
+      }
+    };
+
+    $scope.startJob = function(jobParam, clientParam) {
+      var job = jobParam || this.job; 
+      var client = clientParam || this.$parent.client;
+
+      if (runningJob && runningJob !== 'init') {
+        console.log(runningJob.job.name + ' is currently running in ' + runningJob.client.name + '. Please stop current job first.');
+      } else if (!runningJob && runningJob !== 'init') {
+        runningJob = {job: job, client: client};
+
+        $http.put('/api/clients/' + client._id + '/jobs/' + job._id + '/start')
+        .then(function(result) {
+          job.clockOn = true;
+          jobTimer = startTimer(job);
+        });
+      } else {
+        checkRunningJobs($scope.clients);
+        $scope.startJob(job, client);
+      }
+    };
+
+    var startTimer = function(job) {
+      var initialTime = parseInt(job.totalTime, 10);
+      var startTime = new Date();
+
+      return window.setInterval(function() {
+        var total = new Date() - startTime;
+        $scope.$apply(function() {
+          job.totalTime = initialTime + total;
+        });
+      }, 1000);
+
+    };
+
+    var stopTimer = function(timerName) {
+      window.clearInterval(timerName);
+    };
+
+
+    $scope.stopJob = function() {
+      runningJob = null;
+      var job = this.job;
+      var clientId = this.$parent.client._id;
+
+      $http.put('/api/clients/' + clientId + '/jobs/' + job._id + '/stop')
+      .then(function(result) {
+        // set attributes to returned objects to maintain state
+        var updatedJob = result.data.jobs[0];
+        job.clockOn = updatedJob.clockOn;
+        job.totalTime = updatedJob.totalTime;
+        stopTimer(jobTimer);
+      });
+    };
+
+    $scope.addJob = function(name) {
+      var clientsArr = $scope.clients;
+      var clientId = this.client._id;
+      // get client index in arr
+      // so we can update only the changed client
+      var clientIndex = getIndex(clientsArr, clientId);
+
+      $http.post('/api/clients/' + clientId + '/jobs', {jobName: name})
+      .then(function(result) {
+        // update changed client in scope
+        var updatedClient = result.data[0];
+        $scope.clients[clientIndex] = updatedClient;
+        $scope.input = {open: false};
+      });
+
+    };
+
+    $scope.deleteJob = function() {
+      var job = this.job;
+      var clientsArr = $scope.clients;
+      var clientId = this.$parent.client._id;
+      var clientIndex = getIndex(clientsArr, clientId);
+      var jobIndex = getIndex(clientsArr[clientIndex].jobs, job._id);
+
+      $http.delete('/api/clients/' + clientId + '/jobs/' + job._id + '/delete')
+      .then(function(result) {
+        // remove job from scope
+        $scope.clients[clientIndex].jobs.splice(jobIndex, 1);
+        // reset running job if deleted job was running
+        if (runningJob.job._id === job._id) {
+          runningJob = null;
+        }
+      });
+    };
+    
+    $scope.addClient = function(name) {
+      ClientResource.save({name: name})
+      .$promise.then(function(client) {
+        $scope.clients.push(client); 
+        $state.go('main');
+      });
+    };
+
+    $scope.deleteClient = function() {
+      var clientId = this.client._id;
+      var clientsArr = $scope.clients;
+      var clientIndex = getIndex(clientsArr, clientId);
+
+      $http.delete('/api/clients/' + clientId + '/delete')
+      .then(function(result){
+        $scope.clients.splice(clientIndex, 1);
+        // reset running job if one of the client's jobs were running
+        if (runningJob.client._id === clientId) {
+          runningJob = null;
+        }
+      });
+    };
+    test = function() {
+      console.log(runningJob.job._id);
+    };
+
+    var getIndex = function(arr, id) {
+      for (var i=0; i<arr.length; i++) {
+        if (arr[i]._id === id) {
+          return i;
+        }
+      }
+    };
+
+  }
+]);
+app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state', '$rootScope', 'UserService', 'AuthService',
+  function($scope, $http, $location, $window, $state, $rootScope, UserService, AuthService) {
+  
+  $rootScope.authenticated = AuthService.isLogged || $window.sessionStorage.token;
+  $scope.message = {};
+
+  $scope.createAccount = function(user) {
+    var jsonData = 'jsonStr='+JSON.stringify(user);
+
+    $http({
+      url: '/users',
+      method: 'POST',
+      data: jsonData,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    })
+    .success(function(data) {
+      AuthService.isLogged = true;
+      $rootScope.authenticated = true;
+      $window.sessionStorage.token = data.token;
+      $state.go('main');
+    }).error(function(err){
+      console.log(err);
+    });
+  };
+
+  $scope.logIn = function(email, password) {
+    if (email !== undefined && password !== undefined) {
+      UserService.logIn(email, password)
+      .success(function(data) {
+        AuthService.isLogged = true;
+        $rootScope.authenticated = true;
+        $window.sessionStorage.token = data.token;
+        $state.go('main');
+      })
+      .error(function(status, data) {
+        console.log(status);
+        console.log(data);
+      });
+    }
+  };
+
+  $scope.logOut = function() {
+    AuthService.isLogged = false;
+    delete $window.sessionStorage.token;
+    $rootScope.authenticated = false;
+    $state.go('login');
+  };
+
+}]);
+
+
+
 app.factory('AuthService', ['$window', function($window) {
   var auth = {
     isLogged: $window.sessionStorage.token
@@ -160,217 +393,3 @@ app.factory('UserService', function($http) {
     }
   };
 });
-app.controller('EntriesCtrl', ['$scope', 'Client', 
-  function($scope, Client) {
-    $scope.entries = Client.query();
-  }
-]);
-app.controller('MainCtrl', ['$scope', '$http', '$state', 'ClientResource', 
-  function($scope, $http, $state, ClientResource) {
-    
-    $scope.clients = $scope.clients || ClientResource.query();
-    var jobTimer;
-    var runningJob = 'init';
-
-    var checkRunningJobs = function(clientArr) {
-      
-      for (var i=0; i<clientArr.length; i++) {
-        var jobArr = clientArr[i].jobs;
-        for (var x=0; x<jobArr.length; x++) {
-          if (jobArr[x].clockOn) {
-            runningJob = {job: jobArr[x], client: clientArr[i]};
-          }
-        }
-      }
-    };
-
-    $scope.input = {open: false};
-    $scope.inputToggle = function($index) {
-      // Toggles open/close job input fields
-      // Sets focus to input field by clientId when opened 
-      var input = $scope.input;
-      var clientId = this.client._id;
-
-      if (input.open && input[$index] === true ) { //close input
-        $scope.input = {open: false};
-      } else if (input.open) { //close and open input                      
-        $scope.input = {open: true};
-        $scope.input[$index] = true;
-        window.setTimeout(function(){
-          var jobInput = document.querySelector("input[name ='" + clientId +"']");
-          jobInput.focus();
-        }, 10); //waits for DOM to load
-      } else { //open input                                            
-        $scope.input.open = true;
-        $scope.input[$index] = true;
-        window.setTimeout(function(){
-          var jobInput = document.querySelector("input[name ='" + clientId +"']");
-          jobInput.focus();
-        }, 10);//waits for DOM to load
-      }
-    };
-
-    $scope.startJob = function() {
-
-      if (runningJob && runningJob !== 'init') {
-        console.log(runningJob.job.name + ' is currently running in ' + runningJob.client.name + '. Please stop current job first.');
-      } else if (!runningJob && runningJob !== 'init') {
-        runningJob = {job: this.job, client: this.client};
-        var job = this.job;
-        var clientId = this.$parent.client._id;
-
-        $http.put('/api/clients/' + clientId + '/jobs/' + job._id + '/start')
-        .then(function(result) {
-          job.clockOn = true;
-          jobTimer = startTimer(job);
-        });
-      } else {
-        checkRunningJobs($scope.clients);
-        $scope.startJob();
-      }
-    };
-
-    var startTimer = function(job) {
-      var initialTime = parseInt(job.totalTime, 10);
-      var startTime = new Date();
-
-      return window.setInterval(function() {
-        var total = new Date() - startTime;
-        $scope.$apply(function() {
-          job.totalTime = initialTime + total;
-        });
-      }, 1000);
-
-    };
-
-    var stopTimer = function(timerName) {
-      window.clearInterval(timerName);
-    };
-
-
-    $scope.stopJob = function() {
-      runningJob = null;
-      var job = this.job;
-      var clientId = this.$parent.client._id;
-
-      $http.put('/api/clients/' + clientId + '/jobs/' + job._id + '/stop')
-      .then(function(result) {
-        // set attributes to returned objects to maintain state
-        var updatedJob = result.data.jobs[0];
-        job.clockOn = updatedJob.clockOn;
-        job.totalTime = updatedJob.totalTime;
-        stopTimer(jobTimer);
-      });
-    };
-
-    $scope.addJob = function(name) {
-      var clientsArr = $scope.clients;
-      var clientId = this.client._id;
-      // get client index in arr
-      // so we can update only the changed client
-      var clientIndex = getIndex(clientsArr, clientId);
-
-      $http.post('/api/clients/' + clientId + '/jobs', {jobName: name})
-      .then(function(result) {
-        // update changed client in scope
-        var updatedClient = result.data[0];
-        $scope.clients[clientIndex] = updatedClient;
-        $scope.input = {open: false};
-      });
-
-    };
-
-    $scope.deleteJob = function() {
-      var job = this.job;
-      var clientsArr = $scope.clients;
-      var clientId = this.$parent.client._id;
-      var clientIndex = getIndex(clientsArr, clientId);
-      var jobIndex = getIndex(clientsArr[clientIndex].jobs, job._id);
-
-      $http.delete('/api/clients/' + clientId + '/jobs/' + job._id + '/delete')
-      .then(function(result) {
-        // remove job from scope
-        $scope.clients[clientIndex].jobs.splice(jobIndex, 1);
-      });
-    };
-    
-    $scope.addClient = function(name) {
-      ClientResource.save({name: name})
-      .$promise.then(function(client) {
-        $scope.clients.push(client); 
-        $state.go('main');
-      });
-    };
-
-    $scope.deleteClient = function() {
-      var clientId = this.client._id;
-      var clientsArr = $scope.clients;
-      var clientIndex = getIndex(clientsArr, clientId);
-
-      $http.delete('/api/clients/' + clientId + '/delete')
-      .then(function(result){
-        $scope.clients.splice(clientIndex, 1);
-      });
-    };
-
-    var getIndex = function(arr, id) {
-      for (var i=0; i<arr.length; i++) {
-        if (arr[i]._id === id) {
-          return i;
-        }
-      }
-    };
-
-  }
-]);
-app.controller('UserCtrl', ['$scope', '$http', '$location', '$window', '$state', '$rootScope', 'UserService', 'AuthService',
-  function($scope, $http, $location, $window, $state, $rootScope, UserService, AuthService) {
-  
-  $rootScope.authenticated = AuthService.isLogged || $window.sessionStorage.token;
-  $scope.message = {};
-
-  $scope.createAccount = function(user) {
-    var jsonData = 'jsonStr='+JSON.stringify(user);
-
-    $http({
-      url: '/users',
-      method: 'POST',
-      data: jsonData,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    })
-    .success(function(data) {
-      AuthService.isLogged = true;
-      $rootScope.authenticated = true;
-      $window.sessionStorage.token = data.token;
-      $state.go('main');
-    }).error(function(err){
-      console.log(err);
-    });
-  };
-
-  $scope.logIn = function(email, password) {
-    if (email !== undefined && password !== undefined) {
-      UserService.logIn(email, password)
-      .success(function(data) {
-        AuthService.isLogged = true;
-        $rootScope.authenticated = true;
-        $window.sessionStorage.token = data.token;
-        $state.go('main');
-      })
-      .error(function(status, data) {
-        console.log(status);
-        console.log(data);
-      });
-    }
-  };
-
-  $scope.logOut = function() {
-    AuthService.isLogged = false;
-    delete $window.sessionStorage.token;
-    $rootScope.authenticated = false;
-    $state.go('login');
-  };
-
-}]);
-
-
